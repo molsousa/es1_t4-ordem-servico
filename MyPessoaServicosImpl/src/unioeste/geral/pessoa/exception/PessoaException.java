@@ -8,6 +8,13 @@ package unioeste.geral.pessoa.exception;
  *
  * @author molsousa
  */
-public class NomeInvalidoException {
+public class PessoaException extends Exception {
     
+    public PessoaException(String msg) {
+        super(msg);
+    }
+    
+    public PessoaException(String msg, Throwable cause) {
+        super(msg, cause);
+    }
 }
