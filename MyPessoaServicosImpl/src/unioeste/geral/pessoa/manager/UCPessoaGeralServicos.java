@@ -49,6 +49,7 @@ public class UCPessoaGeralServicos {
 
                 return emails;
             } catch (SQLException e) {
+                conn.rollback();
                 throw new SQLException(e.getMessage(), e);
             }
         }

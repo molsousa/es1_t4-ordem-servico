@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Teste API Cliente</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            background-color: #f9f9f9;
+        }
+        .container {
+            max-width: 800px;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .input-group {
+            margin-bottom: 15px;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        input {
+            padding: 10px;
+            width: 250px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        button {
+            padding: 10px 20px;
+            cursor: pointer;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        pre {
+            background: #272822;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 5px;
+            min-height: 200px;
+            max-height: 500px;
+            overflow-y: auto;
+            overflow-x: auto;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        fieldset {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            padding: 15px;
+        }
+        legend {
+            font-weight: bold;
+            color: #333;
+            padding: 0 5px;
+        }
+        .error-text {
+            color: #dc3545;
+            font-weight: bold;
+        }
+        .success-text {
+            color: #28a745;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Consulta de Cliente</h2>
+
+        <fieldset>
+            <legend>Buscar Cliente por CPF (GET)</legend>
+            <div class="input-group">
+                <label for="cpfInput">CPF:</label>
+                <input type="text" id="cpfInput" placeholder="Ex: 12345678900" maxlength="14">
+                <button onclick="buscarCliente()">Buscar Cliente</button>
+            </div>
+        </fieldset>
+
+        <h3>Resultado (JSON):</h3>
+        <pre id="resultado">Aguardando consulta...</pre>
+    </div>
+
+    <script>
+        // ATENÇÃO: Confirme o nome exato do seu projeto/context path no GlassFish
+        const BASE_URL = "http://localhost:8080/MyOrdemServicoServicos"; 
+
+        function exibirResultado(data, isError = false) {
+            const divResultado = document.getElementById('resultado');
+            divResultado.textContent = JSON.stringify(data, null, 2);
+
+            divResultado.classList.remove('error-text', 'success-text');
+            if (isError) {
+                divResultado.classList.add('error-text');
+            } else {
+                divResultado.classList.add('success-text');
+            }
+        }
+
+        async function buscarCliente() {
+            const cpf = document.getElementById('cpfInput').value.trim();
+            const divResultado = document.getElementById('resultado');
+
+            if (!cpf) {
+                alert("Por favor, digite um CPF.");
+                return;
+            }
+
+            divResultado.textContent = "Buscando cliente...";
+            divResultado.classList.remove('error-text', 'success-text');
+
+            try {
+                // Monta a URL com o CPF passado como query parameter
+                const url = `${BASE_URL}/cliente/obter?cpf=${encodeURIComponent(cpf)}`;
+                const response = await fetch(url);
+
+                // Como o back-end pode retornar erro 404 ou 200, lemos o JSON
+                const data = await response.json();
+
+                if (!response.ok) {
+                    // Se o CPF não for encontrado (404), o back-end devolve {"message": "..."}
+                    exibirResultado({ erro: data.message || "Cliente não encontrado" }, true);
+                } else {
+                    // Se encontrou, exibe o JSON do cliente (com endereço, telefones, etc.)
+                    exibirResultado(data, false);
+                }
+            } catch (error) {
+                // Erros de rede (CORS, servidor offline, JSON malformado)
+                exibirResultado({ erro: "Erro na rede/requisição: " + error.message }, true);
+                console.error("Erro detalhado:", error);
+            }
+        }
+    </script>
+
+</body>
+</html>

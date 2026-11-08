@@ -40,7 +40,7 @@ public class EmailDAO {
 
     public List<Email> obterEmails(Connection conn, int id, String nomeTabela) throws SQLException, PessoaException {
 
-        String SQL = "SELECT endereco FROM \"Email" + nomeTabela + "\" WHERE id_" + nomeTabela + " = ?";
+        String SQL = "SELECT endereco_email FROM \"Email" + nomeTabela + "\" WHERE id_" + nomeTabela + " = ?";
         List<Email> emails = new ArrayList<>();
 
         try (PreparedStatement stmt = conn.prepareStatement(SQL)) {
@@ -51,7 +51,7 @@ public class EmailDAO {
                 while (rs.next()) {
                     Email email = new Email();
 
-                    email.setEndereco(rs.getString("endereco"));
+                    email.setEndereco(rs.getString("endereco_email"));
 
                     emails.add(email);
                 }
