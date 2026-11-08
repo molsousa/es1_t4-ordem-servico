@@ -10,13 +10,13 @@ import java.util.Objects;
  *
  * @author molsousa
  */
-public class CpfException extends PessoaException {
+public class CPFException extends PessoaException {
     
     private static final long serialVersionUID = 1;
     private final CodigoErro erro;
     
     
-    public CpfException(CodigoErro erro, String cpf) {
+    public CPFException(CodigoErro erro, String cpf) {
         super(montarMensagem(erro, cpf));
         this.erro = Objects.requireNonNull(erro, "erro");
     }

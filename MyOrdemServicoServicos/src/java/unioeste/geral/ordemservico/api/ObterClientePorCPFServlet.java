@@ -28,6 +28,7 @@ public class ObterClientePorCPFServlet extends HttpServlet {
     
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.setCharacterEncoding("UTF-8");
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         
@@ -39,7 +40,7 @@ public class ObterClientePorCPFServlet extends HttpServlet {
             
             response.getWriter().write(clienteResponse);
         } catch (Exception e) {
-            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 
             Map<String, String> erro = new HashMap<>();
             erro.put("message", e.getMessage());

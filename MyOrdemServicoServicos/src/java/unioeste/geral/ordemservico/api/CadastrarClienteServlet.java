@@ -14,10 +14,10 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import unioeste.geral.endereco.bo.EnderecoEspecifico;
 import unioeste.geral.ordemservico.bo.Cliente;
 import unioeste.geral.pessoa.bo.Email;
 import unioeste.geral.ordemservico.manager.UCOrdemServicoGeralServicos;
+import unioeste.geral.pessoa.bo.EnderecoEspecifico;
 import unioeste.geral.pessoa.bo.Fone;
 
 /**
@@ -32,6 +32,7 @@ public class CadastrarClienteServlet extends HttpServlet {
     
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.setCharacterEncoding("UTF-8");
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         
@@ -49,7 +50,7 @@ public class CadastrarClienteServlet extends HttpServlet {
             
             response.getWriter().println(clienteResponse);
         } catch (Exception e) {
-            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 
             Map<String, String> erro = new HashMap<>();
             erro.put("message", e.getMessage());

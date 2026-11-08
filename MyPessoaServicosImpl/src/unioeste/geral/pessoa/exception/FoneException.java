@@ -25,6 +25,10 @@ public class FoneException extends PessoaException {
         return erro.getMessage() + ": " + nro;
     }
     
+    public CodigoErro getErro() {
+        return erro;
+    }
+    
     public enum CodigoErro {
         FONE_INVALIDO("Número de telefone inválido"),
         FONE_MAL_FORMATADO("Número de telefone mal formatado");

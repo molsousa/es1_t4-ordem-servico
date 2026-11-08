@@ -51,9 +51,10 @@ public class FoneDAO {
         List<Fone> fones = new ArrayList<>();
 
         try (PreparedStatement stmt = conn.prepareStatement(SQL)) {
-
+            
             stmt.setInt(1, id);
             try (ResultSet rs = stmt.executeQuery()) {
+                
                 while (rs.next()) {
 
                     Fone fone = new Fone();

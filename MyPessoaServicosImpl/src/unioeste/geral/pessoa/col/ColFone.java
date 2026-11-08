@@ -32,6 +32,25 @@ public class ColFone {
 
         return true;
     }
+    
+    public static String formatarFone(Fone fone) throws PessoaException {
+        
+        if(fone.getNro() == null) {
+            return null;
+        }
+        
+        String num = fone.getNro().replaceAll("\\D", "");
+        
+        if(num.length() != 8 || num.length() != 9) {
+            throw new FoneException(FoneException.CodigoErro.FONE_INVALIDO, fone.getNro());
+        }
+        
+        if(num.length() == 8) {
+            return num.replaceAll("(\\d{4})(\\d{4})", "$1-$2");
+        } else {
+            return num.replaceAll("(\\d{5})(\\d{4})", "$1-$2");
+        }
+    }
 
     public static boolean validarFone(Fone fone) throws PessoaException {
 
@@ -48,8 +67,14 @@ public class ColFone {
         
         FoneDAO foneDAO = new FoneDAO();
         
-        validarFone(fone);
-        validarFormato(fone);
+        try {
+            validarFone(fone);
+            validarFormato(fone);
+        } catch (FoneException e) {
+            if(e.getErro() == FoneException.CodigoErro.FONE_MAL_FORMATADO) {
+                fone.setNro(formatarFone(fone));
+            }
+        }
         
         try {
             return foneDAO.cadastrarFone(conn, fone, id, nomeTabela);

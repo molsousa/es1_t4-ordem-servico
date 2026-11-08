@@ -6,7 +6,6 @@ package unioeste.geral.pessoa.bo;
 
 import java.io.Serializable;
 import java.util.List;
-import unioeste.geral.endereco.bo.EnderecoEspecifico;
 
 /**
  *

@@ -8,14 +8,15 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import unioeste.geral.endereco.bo.Endereco;
-import unioeste.geral.endereco.bo.EnderecoEspecifico;
 import unioeste.geral.endereco.col.ColEndereco;
 import unioeste.geral.endereco.exception.EnderecoNaoEncontradoException;
 import unioeste.geral.ordemservico.bo.Cliente;
 import unioeste.geral.ordemservico.exception.OrdemServicoException;
 import unioeste.geral.pessoa.bo.Email;
+import unioeste.geral.pessoa.bo.EnderecoEspecifico;
 import unioeste.geral.pessoa.bo.Fone;
 import unioeste.geral.pessoa.col.ColEmail;
 import unioeste.geral.pessoa.col.ColFone;
@@ -30,36 +31,55 @@ public class ClienteDAO {
 
         String SQL = "INSERT INTO \"Cliente\" (nome_cliente, cpf, nro_endereco, comp_endereco, id_endereco) VALUES "
                 + "(?,?,?,?,?) RETURNING id_cliente";
-        
+
         try (PreparedStatement stmt = conn.prepareStatement(SQL)) {
-            
+
             ColEndereco colEndereco = new ColEndereco();
-            
+
             stmt.setString(1, nome);
             stmt.setString(2, cpf);
             stmt.setLong(3, enderecoEspecifico.getNroEndereco());
             stmt.setString(4, enderecoEspecifico.getComplemento());
-            
+
             int idEndereco;
-            
+
             try {
                 idEndereco = colEndereco.recuperarIDEnderecoPorCEP(conn, enderecoEspecifico.getEndereco().getCep());
             } catch (EnderecoNaoEncontradoException e) {
                 idEndereco = colEndereco.cadastrarEndereco(conn, enderecoEspecifico.getEndereco());
             }
-            
+
             stmt.setInt(5, idEndereco);
-            
+
             try (ResultSet rs = stmt.executeQuery()) {
-                if(rs.next()) {
+                if (rs.next()) {
                     return rs.getInt("id_cliente");
                 }
             }
         } catch (SQLException e) {
             throw new SQLException("Erro ao cadastrar cliente no banco: " + e.getMessage(), e);
         }
-        
+
         throw new OrdemServicoException("Não foi possível cadastrar cliente no banco");
+    }
+
+    public int buscarIDClientePorCPF(Connection conn, String cpf) throws Exception {
+        String SQL = "SELECT id_cliente FROM \"Cliente\" WHERE cpf = ?";
+
+        try (PreparedStatement stmt = conn.prepareStatement(SQL)) {
+
+            stmt.setString(1, cpf);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt("id_cliente");
+                }
+            }
+        } catch (SQLException e) {
+            throw new SQLException("Erro ao buscar cliente no banco: " + e.getMessage(), e);
+        }
+
+        throw new OrdemServicoException("Cliente não existe na base de dados");
     }
 
     public Cliente buscarClientePorCPF(Connection conn, String cpf) throws Exception {
@@ -112,7 +132,7 @@ public class ClienteDAO {
 
         throw new OrdemServicoException("Cliente não existe na base de dados");
     }
-    
+
     public Cliente buscarClientePorID(Connection conn, int id) throws Exception {
 
         String SQL = "SELECT nome_cliente, cpf, nro_endereco, comp_endereco, id_endereco FROM "
@@ -160,5 +180,35 @@ public class ClienteDAO {
         }
 
         throw new OrdemServicoException("Cliente não existe na base de dados");
+    }
+
+    public List<Cliente> listarClientes(Connection conn, String padrao) throws Exception {
+
+        String SQL = "SELECT nome_cliente, cpf FROM \"Cliente\" WHERE nome_cliente ILIKE ?";
+        List<Cliente> clientes = new ArrayList<>();
+
+        try (PreparedStatement stmt = conn.prepareStatement(SQL)) {
+
+            stmt.setString(1, "%" + padrao + "%");
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while(rs.next()) {
+                    Cliente cliente = new Cliente();
+                    
+                    cliente.setNome(rs.getString("nome_cliente"));
+                    cliente.setCpf(rs.getString("cpf"));
+                    
+                    clientes.add(cliente);
+                }
+            }
+        } catch (SQLException e) {
+            throw new SQLException("Erro ao buscar cliente no banco: " + e.getMessage(), e);
+        }
+        
+        if (clientes.isEmpty()) {
+            throw new OrdemServicoException("Nenhum cliente encontrado com o padrão: " + padrao);
+        }
+        
+        return clientes;
     }
 }
