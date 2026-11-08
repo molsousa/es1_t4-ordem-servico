@@ -43,6 +43,22 @@ public class ColFone {
 
         return true;
     }
+    
+    public int cadastrarFones(Connection conn, Fone fone, int id, String nomeTabela) throws PessoaException, SQLException {
+        
+        FoneDAO foneDAO = new FoneDAO();
+        
+        validarFone(fone);
+        validarFormato(fone);
+        
+        try {
+            return foneDAO.cadastrarFone(conn, fone, id, nomeTabela);
+        } catch (SQLException e) {
+            throw new SQLException(e.getMessage());
+        } catch (PessoaException e) {
+            throw new PessoaException("Ocorreu um erro durante o cadastro: " + e.getMessage());
+        }
+    }
 
     public List<Fone> obterFones(Connection conn, int id, String nomeTabela) throws SQLException, PessoaException {
 

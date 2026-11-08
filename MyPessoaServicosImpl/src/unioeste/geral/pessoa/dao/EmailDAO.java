@@ -21,10 +21,13 @@ public class EmailDAO {
 
     public int cadastrarEmail(Connection conn, Email email, int id, String nomeTabela) throws SQLException, PessoaException {
 
-        String SQL = "INSERT INTO \"Email" + nomeTabela + "\" (endereco,id_" + nomeTabela + ") "
+        String SQL = "INSERT INTO \"Email" + nomeTabela + "\" (endereco_email,id_" + nomeTabela + ") "
                 + "VALUES (?,?) RETURNING id_email_" + nomeTabela;
 
         try (PreparedStatement stmt = conn.prepareStatement(SQL)) {
+            
+            stmt.setString(1, email.getEndereco());
+            stmt.setInt(2, id);
 
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {

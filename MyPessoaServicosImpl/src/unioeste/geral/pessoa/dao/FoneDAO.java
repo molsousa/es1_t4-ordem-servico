@@ -29,9 +29,9 @@ public class FoneDAO {
         try (PreparedStatement stmt = conn.prepareStatement(SQL)) {
             
             stmt.setString(1, fone.getNro());
-            stmt.setString(2, fone.getDdi().getNro());
-            stmt.setString(3, fone.getDdd().getNro());
-            stmt.setInt(1, id);
+            stmt.setInt(2, Integer.parseInt(fone.getDdi().getNro()));
+            stmt.setInt(3, Integer.parseInt(fone.getDdd().getNro()));
+            stmt.setInt(4, id);
             
             try(ResultSet rs = stmt.executeQuery()) {
                 if(rs.next()) {

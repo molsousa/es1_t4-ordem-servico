@@ -6,9 +6,13 @@ package unioeste.geral.ordemservico.manager;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.List;
 import unioeste.apoio.bd.ConnectionFactory;
+import unioeste.geral.endereco.bo.EnderecoEspecifico;
 import unioeste.geral.ordemservico.bo.Cliente;
 import unioeste.geral.ordemservico.col.ColCliente;
+import unioeste.geral.pessoa.bo.Email;
+import unioeste.geral.pessoa.bo.Fone;
 
 /**
  *
@@ -16,13 +20,29 @@ import unioeste.geral.ordemservico.col.ColCliente;
  */
 public class UCOrdemServicoGeralServicos {
     
-    public Cliente obterCliente(String cpf) throws Exception {
+    public Cliente cadastrarCliente(String nome, String cpf, EnderecoEspecifico enderecoEspecifico, 
+            List<Fone> fones, List<Email> emails) throws Exception {
         
         try (Connection conn = ConnectionFactory.getConnection()) {
-            
             try {
                 ColCliente colCliente = new ColCliente();
-                Cliente cliente = colCliente.obterCliente(conn, cpf);
+                int idCliente = colCliente.cadastrarCliente(conn, nome, cpf, enderecoEspecifico, fones, emails);
+                
+                conn.commit();
+                return colCliente.recuperarClientePorID(conn, idCliente);
+            } catch (SQLException e) {
+                conn.rollback();
+                throw new SQLException(e.getMessage(), e);
+            }
+        }
+    }
+    
+    public Cliente obterClientePorCPF(String cpf) throws Exception {
+        
+        try (Connection conn = ConnectionFactory.getConnection()) {
+            try {
+                ColCliente colCliente = new ColCliente();
+                Cliente cliente = colCliente.recuperarClientePorCPF(conn, cpf);
                 
                 conn.commit();
                 return cliente;
