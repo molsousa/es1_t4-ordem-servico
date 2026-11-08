@@ -16,7 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import unioeste.geral.ordemservico.bo.Cliente;
 import unioeste.geral.pessoa.bo.Email;
-import unioeste.geral.ordemservico.manager.UCOrdemServicoGeralServicos;
+import unioeste.geral.ordemservico.manager.UCClienteGeralServicos;
 import unioeste.geral.pessoa.bo.EnderecoEspecifico;
 import unioeste.geral.pessoa.bo.Fone;
 
@@ -28,7 +28,7 @@ import unioeste.geral.pessoa.bo.Fone;
 public class CadastrarClienteServlet extends HttpServlet {
     
     private final ObjectMapper objectMapper = new ObjectMapper();
-    private final UCOrdemServicoGeralServicos osManager = new UCOrdemServicoGeralServicos();
+    private final UCClienteGeralServicos clienteManager = new UCClienteGeralServicos();
     
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -44,7 +44,7 @@ public class CadastrarClienteServlet extends HttpServlet {
             List<Fone> fonesForm = clienteForm.getFones();
             List<Email> emailsForm = clienteForm.getEmails();
             
-            Cliente cliente = osManager.cadastrarCliente(nomeForm, cpfForm, eEForm, fonesForm, emailsForm);
+            Cliente cliente = clienteManager.cadastrarCliente(nomeForm, cpfForm, eEForm, fonesForm, emailsForm);
             
             String clienteResponse = objectMapper.writeValueAsString(cliente);
             

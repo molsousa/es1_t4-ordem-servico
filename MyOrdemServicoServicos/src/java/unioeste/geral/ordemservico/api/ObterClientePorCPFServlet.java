@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import unioeste.geral.ordemservico.bo.Cliente;
-import unioeste.geral.ordemservico.manager.UCOrdemServicoGeralServicos;
+import unioeste.geral.ordemservico.manager.UCClienteGeralServicos;
 
 /**
  *
@@ -24,7 +24,7 @@ import unioeste.geral.ordemservico.manager.UCOrdemServicoGeralServicos;
 public class ObterClientePorCPFServlet extends HttpServlet {
     
     private final ObjectMapper objectMapper = new ObjectMapper();
-    private final UCOrdemServicoGeralServicos osManager = new UCOrdemServicoGeralServicos();
+    private final UCClienteGeralServicos clienteManager = new UCClienteGeralServicos();
     
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -35,7 +35,7 @@ public class ObterClientePorCPFServlet extends HttpServlet {
         try {
             String cpf = request.getParameter("cpf");
             
-            Cliente cliente = osManager.obterClientePorCPF(cpf);
+            Cliente cliente = clienteManager.obterClientePorCPF(cpf);
             String clienteResponse = objectMapper.writeValueAsString(cliente);
             
             response.getWriter().write(clienteResponse);

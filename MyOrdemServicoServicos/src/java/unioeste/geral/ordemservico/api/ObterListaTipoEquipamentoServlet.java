@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import unioeste.geral.ordemservico.bo.TipoEquipamento;
-import unioeste.geral.ordemservico.manager.UCOrdemServicoGeralServicos;
+import unioeste.geral.ordemservico.manager.UCTipoEquipamento;
 
 /**
  *
@@ -25,7 +25,7 @@ import unioeste.geral.ordemservico.manager.UCOrdemServicoGeralServicos;
 public class ObterListaTipoEquipamentoServlet extends HttpServlet {
     
     private final ObjectMapper objectMapper = new ObjectMapper();
-    private final UCOrdemServicoGeralServicos osManager = new UCOrdemServicoGeralServicos();
+    private final UCTipoEquipamento tipoEquipamentoManager = new UCTipoEquipamento();
     
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -34,7 +34,7 @@ public class ObterListaTipoEquipamentoServlet extends HttpServlet {
         response.setCharacterEncoding("UTF-8");
         
         try {
-            List<TipoEquipamento> tipoEquipamentos = osManager.obterTipoEquipamentos();
+            List<TipoEquipamento> tipoEquipamentos = tipoEquipamentoManager.obterTipoEquipamentos();
             
             String tipoEquipamentoResponse = objectMapper.writeValueAsString(tipoEquipamentos);
             response.getWriter().println(tipoEquipamentoResponse);

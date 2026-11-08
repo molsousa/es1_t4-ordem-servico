@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import unioeste.geral.ordemservico.bo.Cliente;
-import unioeste.geral.ordemservico.manager.UCOrdemServicoGeralServicos;
+import unioeste.geral.ordemservico.manager.UCClienteGeralServicos;
 
 /**
  *
@@ -25,7 +25,7 @@ import unioeste.geral.ordemservico.manager.UCOrdemServicoGeralServicos;
 public class PesquisarClienteServlet extends HttpServlet {
     
     private final ObjectMapper objectMapper = new ObjectMapper();
-    private final UCOrdemServicoGeralServicos osManager = new UCOrdemServicoGeralServicos();
+    private final UCClienteGeralServicos clienteManager = new UCClienteGeralServicos();
     
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -36,7 +36,7 @@ public class PesquisarClienteServlet extends HttpServlet {
         try {
             String padrao = request.getParameter("padrao");
             
-            List<Cliente> clientes = osManager.obterClientePorPadrao(padrao);
+            List<Cliente> clientes = clienteManager.obterClientePorPadrao(padrao);
             String clientesResponse = objectMapper.writeValueAsString(clientes);
             
             response.getWriter().println(clientesResponse);

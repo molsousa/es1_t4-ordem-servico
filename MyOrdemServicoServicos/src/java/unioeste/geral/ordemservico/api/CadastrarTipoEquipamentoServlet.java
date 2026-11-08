@@ -13,7 +13,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import unioeste.geral.ordemservico.manager.UCOrdemServicoGeralServicos;
+import unioeste.geral.ordemservico.manager.UCTipoEquipamento;
 
 /**
  *
@@ -23,7 +23,7 @@ import unioeste.geral.ordemservico.manager.UCOrdemServicoGeralServicos;
 public class CadastrarTipoEquipamentoServlet extends HttpServlet {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
-    private final UCOrdemServicoGeralServicos osManager = new UCOrdemServicoGeralServicos();
+    private final UCTipoEquipamento tipoEquipamentoManager = new UCTipoEquipamento();
     
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -34,7 +34,7 @@ public class CadastrarTipoEquipamentoServlet extends HttpServlet {
         try {
             String nomeTipoEquipamento = request.getParameter("nome_tipo_equipamento");
             
-            int idTipoEquipamento = osManager.cadastrarTipoEquipamento(nomeTipoEquipamento);
+            int idTipoEquipamento = tipoEquipamentoManager.cadastrarTipoEquipamento(nomeTipoEquipamento);
             String idTipEquipResponse = objectMapper.writeValueAsString(idTipoEquipamento);
             
             response.getWriter().println(idTipEquipResponse);
