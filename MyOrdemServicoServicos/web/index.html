@@ -2,7 +2,7 @@
 <html lang="pt-BR">
     <head>
         <meta charset="UTF-8">
-        <title>Teste API Cliente</title>
+        <title>Gestão de Ordens de Serviço - Testes</title>
         <style>
             body {
                 font-family: Arial, sans-serif;
@@ -59,9 +59,16 @@
                 background-color: #007bff;
                 width: auto;
                 margin-top: 0;
+                white-space: nowrap;
             }
             button.btn-busca:hover {
                 background-color: #0056b3;
+            }
+            button.btn-padrao {
+                background-color: #17a2b8;
+            }
+            button.btn-padrao:hover {
+                background-color: #138496;
             }
             pre {
                 background: #272822;
@@ -91,11 +98,74 @@
                 color: #28a745;
                 font-weight: bold;
             }
+            .section-title {
+                margin-top: 0;
+                color: #555;
+                border-bottom: 1px solid #eee;
+                padding-bottom: 5px;
+                margin-top: 30px;
+            }
         </style>
     </head>
     <body>
         <div class="container">
-            <h2>Gestão de Clientes</h2>
+            <h2>Gestão de Ordens de Serviço</h2>
+
+            <!-- ================= TIPO DE SERVIÇO (NOVO) ================= -->
+            <h3 class="section-title" style="margin-top: 0;">Tipo de Serviço</h3>
+
+            <fieldset>
+                <legend>Listar Tipos de Serviço (GET)</legend>
+                <button class="btn-busca" onclick="listarTipoServicos()">Listar Todos os Serviços</button>
+            </fieldset>
+
+            <fieldset>
+                <legend>Cadastrar Novo Tipo de Serviço (POST)</legend>
+                <div class="grid-2">
+                    <input type="text" id="nomeTipoServico" placeholder="Nome do Serviço (ex: Formatação)">
+                    <input type="number" step="0.01" id="valorTipoServico" placeholder="Valor (ex: 150.00)">
+                </div>
+                <button onclick="cadastrarTipoServico()">Cadastrar Serviço</button>
+            </fieldset>
+
+            <hr style="border: 0; border-top: 2px dashed #ccc; margin: 30px 0;">
+
+            <!-- ================= TIPO DE EQUIPAMENTO ================= -->
+            <h3 class="section-title" style="margin-top: 0;">Tipo de Equipamento</h3>
+
+            <fieldset>
+                <legend>Listar Tipos de Equipamento (GET)</legend>
+                <button class="btn-busca" onclick="listarTipoEquipamentos()">Listar Todos os Tipos</button>
+            </fieldset>
+
+            <fieldset>
+                <legend>Buscar Tipo de Equipamento por Código (GET)</legend>
+                <div style="display: flex; gap: 10px;">
+                    <input type="number" id="codTipoEquipamento" placeholder="Ex: 1" min="1" style="width: 150px;">
+                    <button class="btn-busca btn-padrao" onclick="buscarTipoEquipamentoPorCodigo()">Buscar por Código</button>
+                </div>
+            </fieldset>
+
+            <fieldset>
+                <legend>Cadastrar Novo Tipo de Equipamento (POST)</legend>
+                <div style="display: flex; gap: 10px;">
+                    <input type="text" id="nomeTipoEquipamento" placeholder="Ex: Notebook, Impressora, Roteador...">
+                    <button class="btn-busca" onclick="cadastrarTipoEquipamento()">Cadastrar</button>
+                </div>
+            </fieldset>
+
+            <hr style="border: 0; border-top: 2px dashed #ccc; margin: 30px 0;">
+
+            <!-- ================= CLIENTES ================= -->
+            <h3 class="section-title" style="margin-top: 0;">Clientes</h3>
+
+            <fieldset>
+                <legend>Pesquisar Cliente por Nome (GET)</legend>
+                <div style="display: flex; gap: 10px;">
+                    <input type="text" id="padraoInput" placeholder="Digite parte do nome...">
+                    <button class="btn-busca btn-padrao" onclick="pesquisarClientes()">Pesquisar</button>
+                </div>
+            </fieldset>
 
             <fieldset>
                 <legend>Buscar Cliente por CPF (GET)</legend>
@@ -137,11 +207,10 @@
                 </div>
 
                 <h4>Contato</h4>
-                <!-- ADICIONADO: DDI e DDD para o Telefone -->
                 <div class="grid-4">
-                    <input type="text" id="cadDdi" placeholder="DDI (ex: 55)" value="55">
-                    <input type="text" id="cadDdd" placeholder="DDD (ex: 45)" value="45">
-                    <input type="text" id="cadFone" placeholder="Número do Telefone">
+                    <input type="text" id="cadDdi" placeholder="DDI" value="55">
+                    <input type="text" id="cadDdd" placeholder="DDD" value="45">
+                    <input type="text" id="cadFone" placeholder="Telefone">
                     <input type="email" id="cadEmail" placeholder="E-mail">
                 </div>
 
@@ -160,6 +229,156 @@
                 divResultado.textContent = JSON.stringify(data, null, 2);
                 divResultado.classList.remove('error-text', 'success-text');
                 divResultado.classList.add(isError ? 'error-text' : 'success-text');
+            }
+
+            // --- FUNÇÕES DE TIPO DE SERVIÇO (NOVAS) ---
+
+            async function listarTipoServicos() {
+                const divResultado = document.getElementById('resultado');
+                divResultado.textContent = "Carregando serviços...";
+                divResultado.classList.remove('error-text', 'success-text');
+
+                try {
+                    const response = await fetch(`${BASE_URL}/tipo-servico/listar`);
+                    const data = await response.json();
+
+                    if (!response.ok) {
+                        exibirResultado({erro: data.message || "Erro ao listar"}, true);
+                    } else {
+                        exibirResultado(data, false);
+                    }
+                } catch (error) {
+                    exibirResultado({erro: error.message}, true);
+                }
+            }
+
+            async function cadastrarTipoServico() {
+                const nome = document.getElementById('nomeTipoServico').value.trim();
+                const valor = document.getElementById('valorTipoServico').value.trim();
+
+                if (!nome || !valor)
+                    return alert("Preencha o nome e o valor do serviço.");
+
+                const divResultado = document.getElementById('resultado');
+                divResultado.textContent = "Cadastrando...";
+                divResultado.classList.remove('error-text', 'success-text');
+
+                // O seu Servlet lê um JSON, então montamos o objeto e convertemos com JSON.stringify
+                const payload = {
+                    nome: nome,
+                    valor: parseFloat(valor) // Converte para número, já que o Java espera um Double/Decimal
+                };
+
+                try {
+                    const response = await fetch(`${BASE_URL}/tipo-servico/cadastrar`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(payload)
+                    });
+
+                    const data = await response.json();
+                    exibirResultado(response.ok ? data : {erro: data.message}, !response.ok);
+
+                    if (response.ok) {
+                        document.getElementById('nomeTipoServico').value = '';
+                        document.getElementById('valorTipoServico').value = '';
+                    }
+                } catch (error) {
+                    exibirResultado({erro: error.message}, true);
+                }
+            }
+
+            // --- FUNÇÕES DE TIPO DE EQUIPAMENTO ---
+
+            async function listarTipoEquipamentos() {
+                const divResultado = document.getElementById('resultado');
+                divResultado.textContent = "Carregando...";
+                divResultado.classList.remove('error-text', 'success-text');
+
+                try {
+                    const response = await fetch(`${BASE_URL}/tipo-equipamento/listar`);
+                    const data = await response.json();
+
+                    if (!response.ok) {
+                        exibirResultado({erro: data.message || "Erro ao listar"}, true);
+                    } else {
+                        exibirResultado(data, false);
+                    }
+                } catch (error) {
+                    exibirResultado({erro: error.message}, true);
+                }
+            }
+
+            async function buscarTipoEquipamentoPorCodigo() {
+                const cod = document.getElementById('codTipoEquipamento').value.trim();
+                if (!cod)
+                    return alert("Por favor, digite um código.");
+
+                const divResultado = document.getElementById('resultado');
+                divResultado.textContent = "Buscando...";
+                divResultado.classList.remove('error-text', 'success-text');
+
+                try {
+                    const response = await fetch(`${BASE_URL}/tipo-equipamento/codigo?cod_equipamento=${encodeURIComponent(cod)}`);
+                    const data = await response.json();
+
+                    if (!response.ok) {
+                        exibirResultado({erro: data.message || "Tipo de Equipamento não encontrado"}, true);
+                    } else {
+                        exibirResultado(data, false);
+                    }
+                } catch (error) {
+                    exibirResultado({erro: "Erro na rede: " + error.message}, true);
+                }
+            }
+
+            async function cadastrarTipoEquipamento() {
+                const nome = document.getElementById('nomeTipoEquipamento').value.trim();
+                if (!nome)
+                    return alert("Digite o nome do tipo de equipamento.");
+
+                const divResultado = document.getElementById('resultado');
+                divResultado.textContent = "Cadastrando...";
+                divResultado.classList.remove('error-text', 'success-text');
+
+                const formData = new URLSearchParams();
+                formData.append("nome_tipo_equipamento", nome);
+
+                try {
+                    const response = await fetch(`${BASE_URL}/tipo-equipamento/cadastrar`, {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                        body: formData
+                    });
+
+                    const data = await response.json();
+                    exibirResultado(response.ok ? data : {erro: data.message}, !response.ok);
+
+                    if (response.ok) {
+                        document.getElementById('nomeTipoEquipamento').value = '';
+                    }
+                } catch (error) {
+                    exibirResultado({erro: error.message}, true);
+                }
+            }
+
+            // --- FUNÇÕES DE CLIENTE ---
+
+            async function pesquisarClientes() {
+                const padrao = document.getElementById('padraoInput').value.trim();
+                if (!padrao)
+                    return alert("Digite um nome para pesquisar.");
+                const divResultado = document.getElementById('resultado');
+                divResultado.textContent = "Pesquisando...";
+                try {
+                    const response = await fetch(`${BASE_URL}/cliente/padrao?padrao=${encodeURIComponent(padrao)}`);
+                    const data = await response.json();
+                    exibirResultado(response.ok ? data : {erro: data.message}, !response.ok);
+                } catch (error) {
+                    exibirResultado({erro: error.message}, true);
+                }
             }
 
             async function buscarCliente() {
@@ -184,7 +403,6 @@
                 const payload = {
                     nome: document.getElementById('cadNome').value,
                     cpf: document.getElementById('cadCpf').value,
-
                     enderecoEspecifico: {
                         nroEndereco: document.getElementById('cadNroEndereco').value,
                         complemento: document.getElementById('cadComplemento').value,
@@ -207,14 +425,7 @@
                             }
                         }
                     },
-                    // CORREÇÃO DO FONE AQUI
-                    fones: [
-                        {
-                            nro: document.getElementById('cadFone').value,
-                            ddd: {nro: document.getElementById('cadDdd').value},
-                            ddi: {nro: document.getElementById('cadDdi').value}
-                        }
-                    ],
+                    fones: [{nro: document.getElementById('cadFone').value, ddd: {nro: document.getElementById('cadDdd').value}, ddi: {nro: document.getElementById('cadDdi').value}}],
                     emails: [{endereco: document.getElementById('cadEmail').value}]
                 };
 
@@ -227,7 +438,6 @@
 
                     const data = await response.json();
                     exibirResultado(response.ok ? data : {erro: data.message}, !response.ok);
-
                 } catch (error) {
                     exibirResultado({erro: error.message}, true);
                 }

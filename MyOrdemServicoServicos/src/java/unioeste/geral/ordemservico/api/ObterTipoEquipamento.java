@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import unioeste.geral.ordemservico.bo.TipoEquipamento;
-import unioeste.geral.ordemservico.manager.UCTipoEquipamento;
+import unioeste.geral.ordemservico.manager.UCTipoEquipamentoGeralServicos;
 
 /**
  *
@@ -24,7 +24,7 @@ import unioeste.geral.ordemservico.manager.UCTipoEquipamento;
 public class ObterTipoEquipamento extends HttpServlet {
     
     private final ObjectMapper objectMapper = new ObjectMapper();
-    private final UCTipoEquipamento tipoEquipamentoManager = new UCTipoEquipamento();
+    private final UCTipoEquipamentoGeralServicos tipoEquipamentoManager = new UCTipoEquipamentoGeralServicos();
     
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

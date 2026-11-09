@@ -15,7 +15,7 @@ import unioeste.geral.ordemservico.col.ColTipoEquipamento;
  *
  * @author molsousa
  */
-public class UCTipoEquipamento {
+public class UCTipoEquipamentoGeralServicos {
 
     public int cadastrarTipoEquipamento(String nomeTipoEquipamento) throws Exception {
 
@@ -32,7 +32,7 @@ public class UCTipoEquipamento {
         }
     }
 
-    public List<TipoEquipamento> obterTipoEquipamentos() throws Exception {
+    public List<TipoEquipamento> listarTipoEquipamento() throws Exception {
 
         try (Connection conn = ConnectionFactory.getConnection()) {
             try {

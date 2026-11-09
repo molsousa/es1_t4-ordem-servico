@@ -26,16 +26,16 @@ import unioeste.geral.pessoa.bo.Fone;
  */
 @WebServlet("/cliente/cadastrar")
 public class CadastrarClienteServlet extends HttpServlet {
-    
+
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final UCClienteGeralServicos clienteManager = new UCClienteGeralServicos();
-    
+
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
-        
+
         try {
             Cliente clienteForm = objectMapper.readValue(request.getReader(), Cliente.class);
             String nomeForm = clienteForm.getNome();
@@ -43,11 +43,11 @@ public class CadastrarClienteServlet extends HttpServlet {
             EnderecoEspecifico eEForm = clienteForm.getEnderecoEspecifico();
             List<Fone> fonesForm = clienteForm.getFones();
             List<Email> emailsForm = clienteForm.getEmails();
-            
+
             Cliente cliente = clienteManager.cadastrarCliente(nomeForm, cpfForm, eEForm, fonesForm, emailsForm);
-            
+
             String clienteResponse = objectMapper.writeValueAsString(cliente);
-            
+
             response.getWriter().println(clienteResponse);
         } catch (Exception e) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
