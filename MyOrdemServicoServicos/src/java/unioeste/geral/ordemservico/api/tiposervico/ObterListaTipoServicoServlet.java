@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package unioeste.geral.ordemservico.api;
+package unioeste.geral.ordemservico.api.tiposervico;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
@@ -14,30 +14,30 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import unioeste.geral.ordemservico.bo.TipoEquipamento;
-import unioeste.geral.ordemservico.manager.UCTipoEquipamentoGeralServicos;
+import unioeste.geral.ordemservico.bo.TipoServico;
+import unioeste.geral.ordemservico.manager.UCTipoServicoGeralServicos;
 
 /**
  *
  * @author molsousa
  */
-@WebServlet("/tipo-equipamento/listar")
-public class ObterListaTipoEquipamentoServlet extends HttpServlet {
-    
+@WebServlet("/tipo-servico/listar")
+public class ObterListaTipoServicoServlet extends HttpServlet {
+
     private final ObjectMapper objectMapper = new ObjectMapper();
-    private final UCTipoEquipamentoGeralServicos tipoEquipamentoManager = new UCTipoEquipamentoGeralServicos();
-    
+    private final UCTipoServicoGeralServicos tipoServicoManager = new UCTipoServicoGeralServicos();
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
-        
+
         try {
-            List<TipoEquipamento> tipoEquipamentos = tipoEquipamentoManager.listarTipoEquipamento();
+            List<TipoServico> tipoServicos = tipoServicoManager.listarTipoServicos();
             
-            String tipoEquipamentoResponse = objectMapper.writeValueAsString(tipoEquipamentos);
-            response.getWriter().println(tipoEquipamentoResponse);
+            String tipoServicoResponse = objectMapper.writeValueAsString(tipoServicos);
+            response.getWriter().println(tipoServicoResponse);
         } catch (Exception e) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 

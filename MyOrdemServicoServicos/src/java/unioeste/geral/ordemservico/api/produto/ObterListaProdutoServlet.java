@@ -2,29 +2,30 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package unioeste.geral.ordemservico.api;
+package unioeste.geral.ordemservico.api.produto;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import unioeste.geral.ordemservico.bo.TipoEquipamento;
-import unioeste.geral.ordemservico.manager.UCTipoEquipamentoGeralServicos;
+import unioeste.geral.ordemservico.bo.Produto;
+import unioeste.geral.ordemservico.manager.UCProdutoGeralServicos;
 
 /**
  *
  * @author molsousa
  */
-@WebServlet("/tipo-equipamento/codigo")
-public class ObterTipoEquipamento extends HttpServlet {
+@WebServlet("/produto/listar")
+public class ObterListaProdutoServlet extends HttpServlet {
     
     private final ObjectMapper objectMapper = new ObjectMapper();
-    private final UCTipoEquipamentoGeralServicos tipoEquipamentoManager = new UCTipoEquipamentoGeralServicos();
+    private final UCProdutoGeralServicos produtoManager = new UCProdutoGeralServicos();
     
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -33,12 +34,10 @@ public class ObterTipoEquipamento extends HttpServlet {
         response.setCharacterEncoding("UTF-8");
         
         try {
-            int codEquipamento = Integer.parseInt(request.getParameter("cod_equipamento"));
+            List<Produto> produtos = produtoManager.listarProdutos();
             
-            TipoEquipamento tipoEquipamento = tipoEquipamentoManager.obterTipoEquipamento(codEquipamento);
-            String tipoEquipamentoResponse = objectMapper.writeValueAsString(tipoEquipamento);
-            
-            response.getWriter().println(tipoEquipamentoResponse);
+            String produtoResponse = objectMapper.writeValueAsString(produtos);
+            response.getWriter().println(produtoResponse);
         } catch (Exception e) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 

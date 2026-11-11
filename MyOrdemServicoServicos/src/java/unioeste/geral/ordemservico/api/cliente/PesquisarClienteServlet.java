@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package unioeste.geral.ordemservico.api;
+package unioeste.geral.ordemservico.api.cliente;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
@@ -15,40 +15,31 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import unioeste.geral.ordemservico.bo.Cliente;
-import unioeste.geral.pessoa.bo.Email;
 import unioeste.geral.ordemservico.manager.UCClienteGeralServicos;
-import unioeste.geral.pessoa.bo.EnderecoEspecifico;
-import unioeste.geral.pessoa.bo.Fone;
 
 /**
  *
  * @author molsousa
  */
-@WebServlet("/cliente/cadastrar")
-public class CadastrarClienteServlet extends HttpServlet {
-
+@WebServlet("/cliente/padrao")
+public class PesquisarClienteServlet extends HttpServlet {
+    
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final UCClienteGeralServicos clienteManager = new UCClienteGeralServicos();
-
+    
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
-
+        
         try {
-            Cliente clienteForm = objectMapper.readValue(request.getReader(), Cliente.class);
-            String nomeForm = clienteForm.getNome();
-            String cpfForm = clienteForm.getCpf();
-            EnderecoEspecifico eEForm = clienteForm.getEnderecoEspecifico();
-            List<Fone> fonesForm = clienteForm.getFones();
-            List<Email> emailsForm = clienteForm.getEmails();
-
-            Cliente cliente = clienteManager.cadastrarCliente(nomeForm, cpfForm, eEForm, fonesForm, emailsForm);
-
-            String clienteResponse = objectMapper.writeValueAsString(cliente);
-
-            response.getWriter().println(clienteResponse);
+            String padrao = request.getParameter("padrao");
+            
+            List<Cliente> clientes = clienteManager.obterClientePorPadrao(padrao);
+            String clientesResponse = objectMapper.writeValueAsString(clientes);
+            
+            response.getWriter().println(clientesResponse);
         } catch (Exception e) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 

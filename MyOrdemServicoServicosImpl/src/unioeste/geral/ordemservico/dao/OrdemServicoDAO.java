@@ -36,7 +36,7 @@ public class OrdemServicoDAO {
             stmt.setInt(5, idStatusOS);
             
             try (ResultSet rs = stmt.executeQuery()) {
-                if(rs.next()) {
+                if (rs.next()) {
                     return rs.getInt("nro_os");
                 }
             }
@@ -53,8 +53,8 @@ public class OrdemServicoDAO {
         try (PreparedStatement stmt = conn.prepareStatement(SQL)) {
             stmt.setInt(1, nroOS);
             
-            try(ResultSet rs = stmt.executeQuery()) {
-                if(rs.next()) {
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
                     OrdemServico os = new OrdemServico();
                     
                     os.setNro(nroOS);
@@ -63,14 +63,14 @@ public class OrdemServicoDAO {
                     os.setDtEmissao(rs.getDate("dt_emissao"));
                     
                     ColOSTipoServico colOSTipoServico = new ColOSTipoServico();
-                    try {   
+                    try {                        
                         os.setOsTipoServicos(colOSTipoServico.recuperarOSTipoServicos(conn, nroOS));
                     } catch (OrdemServicoException e) {
                         os.setOsTipoServicos(null);
                     }
                     
                     ColOSProduto colOSProduto = new ColOSProduto();
-                    try {   
+                    try {                        
                         os.setOsProdutos(colOSProduto.recuperarOSProdutos(conn, nroOS));
                     } catch (OrdemServicoException e) {
                         os.setOsProdutos(null);
@@ -83,7 +83,7 @@ public class OrdemServicoDAO {
                     os.setTipoEquipamento(colTipoEquipamento.recuperarTipoEquipamento(conn, rs.getInt("id_tipo_equipamento")));
                     
                     ColTecnico colTecnico = new ColTecnico();
-                    try {   
+                    try {                        
                         os.setTecnico(colTecnico.recuperarTecnicoPorID(conn, rs.getInt("id_tecnico")));
                     } catch (OrdemServicoException e) {
                         System.out.println("Testando saída");

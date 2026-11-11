@@ -2,42 +2,42 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package unioeste.geral.ordemservico.api;
+package unioeste.geral.ordemservico.api.tipoequipamento;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import javax.servlet.ServletException;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import unioeste.geral.ordemservico.bo.OrdemServico;
-import unioeste.geral.ordemservico.manager.UCOrdemServicoGeralServicos;
+import unioeste.geral.ordemservico.manager.UCTipoEquipamentoGeralServicos;
 
 /**
  *
  * @author molsousa
  */
-@WebServlet("/ordem-servico/obter")
-public class ObterOrdemServicoServlet extends HttpServlet {
-    
+@WebServlet("/tipo-equipamento/cadastrar")
+public class CadastrarTipoEquipamentoServlet extends HttpServlet {
+
     private final ObjectMapper objectMapper = new ObjectMapper();
-    private final UCOrdemServicoGeralServicos osManager = new UCOrdemServicoGeralServicos();
+    private final UCTipoEquipamentoGeralServicos tipoEquipamentoManager = new UCTipoEquipamentoGeralServicos();
     
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         
         try {
-            int nroOS = Integer.parseInt(request.getParameter("nro_os"));
-            OrdemServico os = osManager.obterOrdemServico(nroOS);
+            String nomeTipoEquipamento = request.getParameter("nome_tipo_equipamento");
             
-            String osResponse = objectMapper.writeValueAsString(os);
-            response.getWriter().println(osResponse);
+            int idTipoEquipamento = tipoEquipamentoManager.cadastrarTipoEquipamento(nomeTipoEquipamento);
+            String idTipEquipResponse = objectMapper.writeValueAsString(idTipoEquipamento);
+            
+            response.getWriter().println(idTipEquipResponse);
         } catch (Exception e) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 

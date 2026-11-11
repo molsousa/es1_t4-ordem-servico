@@ -2,30 +2,29 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package unioeste.geral.ordemservico.api;
+package unioeste.geral.ordemservico.api.cliente;
 
-import java.io.IOException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import unioeste.geral.ordemservico.bo.Produto;
-import unioeste.geral.ordemservico.manager.UCProdutoGeralServicos;
+import unioeste.geral.ordemservico.bo.Cliente;
+import unioeste.geral.ordemservico.manager.UCClienteGeralServicos;
 
 /**
  *
  * @author molsousa
  */
-@WebServlet("/produto/listar")
-public class ObterListaProdutoServlet extends HttpServlet {
+@WebServlet("/cliente/obter")
+public class ObterClientePorCPFServlet extends HttpServlet {
     
     private final ObjectMapper objectMapper = new ObjectMapper();
-    private final UCProdutoGeralServicos produtoManager = new UCProdutoGeralServicos();
+    private final UCClienteGeralServicos clienteManager = new UCClienteGeralServicos();
     
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -34,10 +33,12 @@ public class ObterListaProdutoServlet extends HttpServlet {
         response.setCharacterEncoding("UTF-8");
         
         try {
-            List<Produto> produtos = produtoManager.listarProdutos();
+            String cpf = request.getParameter("cpf");
             
-            String produtoResponse = objectMapper.writeValueAsString(produtos);
-            response.getWriter().println(produtoResponse);
+            Cliente cliente = clienteManager.obterClientePorCPF(cpf);
+            String clienteResponse = objectMapper.writeValueAsString(cliente);
+            
+            response.getWriter().write(clienteResponse);
         } catch (Exception e) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 

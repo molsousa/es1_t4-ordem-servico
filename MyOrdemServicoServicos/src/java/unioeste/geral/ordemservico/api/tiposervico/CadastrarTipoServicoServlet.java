@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package unioeste.geral.ordemservico.api;
+package unioeste.geral.ordemservico.api.tiposervico;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
@@ -13,32 +13,32 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import unioeste.geral.ordemservico.bo.Cliente;
-import unioeste.geral.ordemservico.manager.UCClienteGeralServicos;
+import unioeste.geral.ordemservico.bo.TipoServico;
+import unioeste.geral.ordemservico.manager.UCTipoServicoGeralServicos;
 
 /**
  *
  * @author molsousa
  */
-@WebServlet("/cliente/obter")
-public class ObterClientePorCPFServlet extends HttpServlet {
-    
+@WebServlet("/tipo-servico/cadastrar")
+public class CadastrarTipoServicoServlet extends HttpServlet {
+
     private final ObjectMapper objectMapper = new ObjectMapper();
-    private final UCClienteGeralServicos clienteManager = new UCClienteGeralServicos();
-    
+    private final UCTipoServicoGeralServicos tipoServicoManager = new UCTipoServicoGeralServicos();
+
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
-        
+
         try {
-            String cpf = request.getParameter("cpf");
-            
-            Cliente cliente = clienteManager.obterClientePorCPF(cpf);
-            String clienteResponse = objectMapper.writeValueAsString(cliente);
-            
-            response.getWriter().write(clienteResponse);
+            TipoServico tipoServicoForm = objectMapper.readValue(request.getReader(), TipoServico.class);
+
+            int idTipoServico = tipoServicoManager.cadastrarTipoServico(tipoServicoForm.getNome(), tipoServicoForm.getValor());
+            String tipoServicoResponse = objectMapper.writeValueAsString(idTipoServico);
+
+            response.getWriter().println(tipoServicoResponse);
         } catch (Exception e) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 
