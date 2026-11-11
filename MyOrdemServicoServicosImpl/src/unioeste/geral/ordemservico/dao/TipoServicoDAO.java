@@ -53,6 +53,7 @@ public class TipoServicoDAO {
 
                     TipoServico tipoServico = new TipoServico();
 
+                    tipoServico.setCodigo(rs.getInt("id_tipo_servico"));
                     tipoServico.setNome(rs.getString("nome_tipo_servico"));
                     tipoServico.setValor(rs.getDouble("valor_referencia"));
 
@@ -68,5 +69,30 @@ public class TipoServicoDAO {
         }
 
         return tipoServicos;
+    }
+    
+    public TipoServico obterTipoServico(Connection conn, int idTipoServico) throws Exception {
+        String SQL = "SELECT * FROM \"TipoServico\" WHERE id_tipo_servico = ?";
+        
+        try(PreparedStatement stmt = conn.prepareStatement(SQL)) {
+            stmt.setInt(1, idTipoServico);
+            
+            try (ResultSet rs = stmt.executeQuery()) {
+                
+                if(rs.next()) {
+                    TipoServico ts = new TipoServico();
+                    
+                    ts.setCodigo(idTipoServico);
+                    ts.setNome(rs.getString("nome_tipo_servico"));
+                    ts.setValor(rs.getDouble("valor_referencia"));
+                    
+                    return ts;
+                }
+            }
+        } catch (SQLException e) {
+            throw new SQLException("Erro ao buscar tipo de serviço no banco: " + e.getMessage(), e);
+        }
+        
+        throw new OrdemServicoException("Não foi possível retornar tipo de serviço do banco");
     }
 }

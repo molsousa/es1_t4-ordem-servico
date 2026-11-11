@@ -14,10 +14,19 @@ public class TipoServico implements Serializable {
 
     public final static long serialVersionUID = 1;
 
+    private int codigo;
     private String nome;
     private double valor;
 
     public TipoServico() {
+    }
+
+    public int getCodigo() {
+        return codigo;
+    }
+
+    public void setCodigo(int codigo) {
+        this.codigo = codigo;
     }
 
     public String getNome() {

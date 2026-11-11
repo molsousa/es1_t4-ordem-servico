@@ -15,6 +15,7 @@ public class OSTipoServico implements Serializable {
     public final static long serialVersionUID = 1;
 
     private TipoServico tipoServico;
+    private double valor;
 
     public OSTipoServico() {
     }
@@ -25,6 +26,14 @@ public class OSTipoServico implements Serializable {
 
     public void setTipoServico(TipoServico tipoServico) {
         this.tipoServico = tipoServico;
+    }
+
+    public double getValor() {
+        return valor;
+    }
+
+    public void setValor(double valor) {
+        this.valor = valor;
     }
 
 }

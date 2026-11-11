@@ -52,4 +52,16 @@ public class ColTipoServico {
             throw new OrdemServicoException(e.getMessage(), e);
         }
     }
+    
+    public TipoServico recuperarTipoServico(Connection conn, int idTipoServico) throws Exception {
+        
+        try {
+            TipoServicoDAO tipoServicoDAO = new TipoServicoDAO();
+            return tipoServicoDAO.obterTipoServico(conn, idTipoServico);
+        } catch (SQLException e) {
+            throw new SQLException(e.getMessage(), e);
+        } catch (OrdemServicoException e) {
+            throw new OrdemServicoException(e.getMessage(), e);
+        }
+    }
 }
