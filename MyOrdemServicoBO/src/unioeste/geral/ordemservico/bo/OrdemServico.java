@@ -22,10 +22,10 @@ public class OrdemServico implements Serializable {
     private double valorTotalOS;
     private Tecnico tecnico;
     private Cliente cliente;
-    private Atendente atendente;
     private List<OSTipoServico> osTipoServicos;
     private List<OSProduto> osProdutos;
     private TipoEquipamento tipoEquipamento;
+    private StatusOS statusOS;
 
     public OrdemServico() {
     }
@@ -78,14 +78,6 @@ public class OrdemServico implements Serializable {
         this.cliente = cliente;
     }
 
-    public Atendente getAtendente() {
-        return atendente;
-    }
-
-    public void setAtendente(Atendente atendente) {
-        this.atendente = atendente;
-    }
-
     public List<OSTipoServico> getOsTipoServicos() {
         return osTipoServicos;
     }
@@ -108,6 +100,14 @@ public class OrdemServico implements Serializable {
 
     public void setTipoEquipamento(TipoEquipamento tipoEquipamento) {
         this.tipoEquipamento = tipoEquipamento;
+    }
+
+    public StatusOS getStatusOS() {
+        return statusOS;
+    }
+
+    public void setStatusOS(StatusOS statusOS) {
+        this.statusOS = statusOS;
     }
 
 }

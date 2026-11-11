@@ -20,7 +20,7 @@ import unioeste.geral.ordemservico.exception.OrdemServicoException;
 public class ProdutoDAO {
 
     public int cadastrarProduto(Connection conn, String nome, double valor) throws Exception {
-        String SQL = "INSERT INTO \"Produto\" (nome_produto, valor_referencia) VALUES(?,?) RETURNING id_produto";
+        String SQL = "INSERT INTO \"Produto\" (nome_produto, valor_referencia) VALUES (?,?) RETURNING id_produto";
 
         try (PreparedStatement stmt = conn.prepareStatement(SQL)) {
             stmt.setString(1, nome);
@@ -67,7 +67,7 @@ public class ProdutoDAO {
     }
 
     public Produto obterProduto(Connection conn, int idProduto) throws Exception {
-        String SQL = "SELECT * \"Produto\" WHERE id_produto = ?";
+        String SQL = "SELECT * FROM \"Produto\" WHERE id_produto = ?";
 
         try (PreparedStatement stmt = conn.prepareStatement(SQL)) {
             stmt.setInt(1, idProduto);

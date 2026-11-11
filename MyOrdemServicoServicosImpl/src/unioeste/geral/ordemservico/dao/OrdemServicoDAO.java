@@ -12,6 +12,8 @@ import unioeste.geral.ordemservico.bo.OrdemServico;
 import unioeste.geral.ordemservico.col.ColCliente;
 import unioeste.geral.ordemservico.col.ColOSProduto;
 import unioeste.geral.ordemservico.col.ColOSTipoServico;
+import unioeste.geral.ordemservico.col.ColStatusOS;
+import unioeste.geral.ordemservico.col.ColTecnico;
 import unioeste.geral.ordemservico.col.ColTipoEquipamento;
 import unioeste.geral.ordemservico.exception.OrdemServicoException;
 
@@ -55,15 +57,24 @@ public class OrdemServicoDAO {
                 if(rs.next()) {
                     OrdemServico os = new OrdemServico();
                     
-                    ColOSTipoServico colOSTipoServico = new ColOSTipoServico();
-                    ColOSProduto colOSProduto = new ColOSProduto();
-                    
                     os.setNro(nroOS);
                     os.setDescProblema(rs.getString("desc_problema"));
                     os.setValorTotalOS(rs.getDouble("valor_total_os"));
+                    os.setDtEmissao(rs.getDate("dt_emissao"));
                     
-                    os.setOsTipoServicos(colOSTipoServico.recuperarOSTipoServicos(conn, nroOS));
-                    os.setOsProdutos(colOSProduto.recuperarOSProdutos(conn, nroOS));
+                    ColOSTipoServico colOSTipoServico = new ColOSTipoServico();
+                    try {   
+                        os.setOsTipoServicos(colOSTipoServico.recuperarOSTipoServicos(conn, nroOS));
+                    } catch (OrdemServicoException e) {
+                        os.setOsTipoServicos(null);
+                    }
+                    
+                    ColOSProduto colOSProduto = new ColOSProduto();
+                    try {   
+                        os.setOsProdutos(colOSProduto.recuperarOSProdutos(conn, nroOS));
+                    } catch (OrdemServicoException e) {
+                        os.setOsProdutos(null);
+                    }
                     
                     ColCliente colCliente = new ColCliente();
                     os.setCliente(colCliente.recuperarClientePorID(conn, rs.getInt("id_cliente")));
@@ -71,7 +82,16 @@ public class OrdemServicoDAO {
                     ColTipoEquipamento colTipoEquipamento = new ColTipoEquipamento();
                     os.setTipoEquipamento(colTipoEquipamento.recuperarTipoEquipamento(conn, rs.getInt("id_tipo_equipamento")));
                     
+                    ColTecnico colTecnico = new ColTecnico();
+                    try {   
+                        os.setTecnico(colTecnico.recuperarTecnicoPorID(conn, rs.getInt("id_tecnico")));
+                    } catch (OrdemServicoException e) {
+                        System.out.println("Testando saída");
+                        os.setTecnico(null);
+                    }
                     
+                    ColStatusOS colStatusOS = new ColStatusOS();
+                    os.setStatusOS(colStatusOS.recuperarStatusOS(conn, rs.getInt("id_status_os")));
                     
                     return os;
                 }

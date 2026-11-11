@@ -47,11 +47,11 @@ public class OSProdutoDAO {
                 }
             }
         } catch (SQLException e) {
-            throw new SQLException("Erro ao buscar tipo de serviço no banco: " + e.getMessage(), e);
+            throw new SQLException("Erro ao buscar produto no banco: " + e.getMessage(), e);
         }
         
         if(osProdutos.isEmpty()) {
-            throw new OrdemServicoException("Não há tipos de serviço para essa ordem de serviço");
+            throw new OrdemServicoException("Não há produtos para essa ordem de serviço");
         }
         
         return osProdutos;
