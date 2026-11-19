@@ -21,7 +21,7 @@ import unioeste.geral.ordemservico.manager.UCTipoEquipamentoGeralServicos;
  * @author molsousa
  */
 @WebServlet("/tipo-equipamento/codigo")
-public class ObterTipoEquipamento extends HttpServlet {
+public class ObterTipoEquipamentoServlet extends HttpServlet {
     
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final UCTipoEquipamentoGeralServicos tipoEquipamentoManager = new UCTipoEquipamentoGeralServicos();

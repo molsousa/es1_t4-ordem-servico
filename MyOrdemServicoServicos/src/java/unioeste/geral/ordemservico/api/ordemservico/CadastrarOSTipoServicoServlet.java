@@ -22,7 +22,7 @@ import unioeste.geral.ordemservico.manager.UCOrdemServicoGeralServicos;
  * @author molsousa
  */
 @WebServlet("/ordem-servico/atualizar/os-tipo-servico")
-public class CadastrarOSTipoServico extends HttpServlet {
+public class CadastrarOSTipoServicoServlet extends HttpServlet {
     
     private final ObjectMapper objectMapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);;
     private final UCOrdemServicoGeralServicos osManager = new UCOrdemServicoGeralServicos();
