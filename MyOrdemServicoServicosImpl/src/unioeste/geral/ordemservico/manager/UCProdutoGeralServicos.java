@@ -10,6 +10,7 @@ import java.util.List;
 import unioeste.apoio.bd.ConnectionFactory;
 import unioeste.geral.ordemservico.bo.Produto;
 import unioeste.geral.ordemservico.col.ColProduto;
+import unioeste.geral.ordemservico.exception.OrdemServicoException;
 
 /**
  *
@@ -26,9 +27,14 @@ public class UCProdutoGeralServicos {
                 int codigoProduto = colProduto.cadastrarProduto(conn, nome, valor);
                 conn.commit();
                 return codigoProduto;
-            } catch (SQLException e) {
+            } catch (Exception e) {
                 conn.rollback();
-                throw new SQLException(e.getMessage(), e);
+                
+                if(e instanceof SQLException) {
+                    throw new OrdemServicoException(e.getMessage(), e);
+                }
+                
+                throw e;
             }
         }
     }
@@ -42,9 +48,14 @@ public class UCProdutoGeralServicos {
                 List<Produto> produtos = colProduto.recuperarProdutos(conn);
                 conn.commit();
                 return produtos;
-            } catch (SQLException e) {
+            } catch (Exception e) {
                 conn.rollback();
-                throw new SQLException(e.getMessage(), e);
+                
+                if(e instanceof SQLException) {
+                    throw new OrdemServicoException(e.getMessage(), e);
+                }
+                
+                throw e;
             }
         }
     }

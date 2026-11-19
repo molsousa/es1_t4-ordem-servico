@@ -6,23 +6,35 @@ package unioeste.geral.ordemservico.manager;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.List;
 import unioeste.apoio.bd.ConnectionFactory;
-import unioeste.geral.ordemservico.bo.Cliente;
 import unioeste.geral.ordemservico.bo.OrdemServico;
-import unioeste.geral.ordemservico.bo.TipoEquipamento;
-import unioeste.geral.ordemservico.col.ColCliente;
 import unioeste.geral.ordemservico.col.ColOrdemServico;
-import unioeste.geral.ordemservico.col.ColTipoEquipamento;
-import unioeste.geral.pessoa.bo.Email;
-import unioeste.geral.pessoa.bo.EnderecoEspecifico;
-import unioeste.geral.pessoa.bo.Fone;
-
+import unioeste.geral.ordemservico.exception.OrdemServicoException;
 /**
  *
  * @author molsousa
  */
 public class UCOrdemServicoGeralServicos {
+    
+    public boolean cadastrarOrdemServico(OrdemServico os, int idStatusOS) throws Exception {
+        
+        try (Connection conn = ConnectionFactory.getConnection()) {
+            try {
+                ColOrdemServico colOrdemServico = new ColOrdemServico();
+                boolean sucesso = colOrdemServico.cadastrarOrdemServico(conn, os, os.getTipoEquipamento().getCodigo(), os.getCliente().getCpf(), idStatusOS);
+                conn.commit();
+                return sucesso;
+            } catch (Exception e) {
+                conn.rollback();
+                
+                if(e instanceof SQLException) {
+                    throw new OrdemServicoException(e.getMessage(), e);
+                }
+                
+                throw e;
+            }
+        }
+    }
     
     public OrdemServico obterOrdemServico(int nroOS) throws Exception {
         
@@ -32,9 +44,34 @@ public class UCOrdemServicoGeralServicos {
                 OrdemServico ordemServico = colOrdemServico.recuperarOrdemServico(conn, nroOS);
                 conn.commit();
                 return ordemServico;
-            } catch (SQLException e) {
+            } catch (Exception e) {
                 conn.rollback();
-                throw new SQLException(e.getMessage(), e);
+                
+                if(e instanceof SQLException) {
+                    throw new OrdemServicoException(e.getMessage(), e);
+                }
+                
+                throw e;
+            }
+        }
+    }
+    
+    public boolean atualizarTecnicoOS(int idTecnico, int nroOS) throws Exception {
+        
+        try (Connection conn = ConnectionFactory.getConnection()) {
+            try {
+                ColOrdemServico colOrdemServico = new ColOrdemServico();
+                boolean sucesso = colOrdemServico.atualizarOSTecnico(conn, idTecnico, nroOS);
+                conn.commit();
+                return sucesso;
+            } catch (Exception e) {
+                conn.rollback();
+                
+                if(e instanceof SQLException) {
+                    throw new OrdemServicoException(e.getMessage(), e);
+                }
+                
+                throw e;
             }
         }
     }

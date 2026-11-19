@@ -89,4 +89,22 @@ public class TipoEquipamentoDAO {
         
         throw new OrdemServicoException("Não há tipo de equipamento com esse código: " + codEquipamento);
     }
+    
+    public int buscarIDTipoEquipamento(Connection conn, TipoEquipamento equipamento) throws Exception {
+        String SQL = "SELECT id_tipo_equipamento FROM \"TipoEquipamento\" WHERE nome_tipo_equipamento = ?";
+        
+        try (PreparedStatement stmt = conn.prepareStatement(SQL)) {
+            stmt.setString(1, equipamento.getNome());
+            
+            try (ResultSet rs = stmt.executeQuery()) {
+                if(rs.next()) {
+                    return rs.getInt("id_tipo_equipamento");
+                }
+            }
+        } catch (SQLException e) {
+            throw new SQLException("Erro ao buscar tipo de equipamento no banco: " + e.getMessage(), e);
+        }
+        
+        throw new OrdemServicoException("Não há tipo de equipamento com esse nome: " + equipamento.getNome());
+    }
 }

@@ -10,6 +10,7 @@ import java.util.List;
 import unioeste.apoio.bd.ConnectionFactory;
 import unioeste.geral.ordemservico.bo.TipoEquipamento;
 import unioeste.geral.ordemservico.col.ColTipoEquipamento;
+import unioeste.geral.ordemservico.exception.OrdemServicoException;
 
 /**
  *
@@ -25,9 +26,14 @@ public class UCTipoEquipamentoGeralServicos {
                 int id = colTipoEquipamento.cadastrarTipoEquipamento(conn, nomeTipoEquipamento);
                 conn.commit();
                 return id;
-            } catch (SQLException e) {
+            } catch (Exception e) {
                 conn.rollback();
-                throw new SQLException(e.getMessage(), e);
+                
+                if(e instanceof SQLException) {
+                    throw new OrdemServicoException(e.getMessage(), e);
+                }
+                
+                throw e;
             }
         }
     }
@@ -40,9 +46,14 @@ public class UCTipoEquipamentoGeralServicos {
                 List<TipoEquipamento> tipoEquipamentos = colTipoEquipamento.recuperarTipoEquipamentos(conn);
                 conn.commit();
                 return tipoEquipamentos;
-            } catch (SQLException e) {
+            } catch (Exception e) {
                 conn.rollback();
-                throw new SQLException(e.getMessage(), e);
+                
+                if(e instanceof SQLException) {
+                    throw new OrdemServicoException(e.getMessage(), e);
+                }
+                
+                throw e;
             }
         }
     }
@@ -55,9 +66,14 @@ public class UCTipoEquipamentoGeralServicos {
                 TipoEquipamento tipoEquipamento = colTipoEquipamento.recuperarTipoEquipamento(conn, codTipoEquipamento);
                 conn.commit();
                 return tipoEquipamento;
-            } catch (SQLException e) {
+            } catch (Exception e) {
                 conn.rollback();
-                throw new SQLException(e.getMessage(), e);
+                
+                if(e instanceof SQLException) {
+                    throw new OrdemServicoException(e.getMessage(), e);
+                }
+                
+                throw e;
             }
         }
     }

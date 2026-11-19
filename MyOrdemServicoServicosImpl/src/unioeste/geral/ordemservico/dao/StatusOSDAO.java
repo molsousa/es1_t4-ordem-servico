@@ -38,4 +38,22 @@ public class StatusOSDAO {
 
         throw new OrdemServicoException("Não foi possível status da ordem de serviço no banco");
     }
+    
+    public int obterIDStatusOS(Connection conn, StatusOS statusOS) throws Exception {
+        String SQL = "SELECT id_status_os from \"StatusOS\" WHERE descricao_status_os = ?";
+        
+        try (PreparedStatement stmt = conn.prepareStatement(SQL)) {
+            stmt.setString(1, statusOS.getDescricao());
+            
+            try (ResultSet rs = stmt.executeQuery()) {
+                if(rs.next()) {
+                    return rs.getInt("id_status_os");
+                }
+            }
+        } catch (SQLException e) {
+            throw new SQLException("Erro ao buscar status da ordem de serviço no banco: " + e.getMessage(), e);
+        }
+
+        throw new OrdemServicoException("Não foi possível status da ordem de serviço no banco");
+    }
 }

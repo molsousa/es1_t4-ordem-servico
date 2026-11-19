@@ -28,4 +28,16 @@ public class ColStatusOS {
         }
     }
     
+    public int recuperarIDStatusOS(Connection conn, StatusOS statusOS) throws Exception {
+        StatusOSDAO statusOSDAO = new StatusOSDAO();
+        
+        try {
+            return statusOSDAO.obterIDStatusOS(conn, statusOS);
+        } catch (SQLException e) {
+            throw new SQLException(e.getMessage(), e);
+        } catch (OrdemServicoException e) {
+            throw new OrdemServicoException(e.getMessage(), e);
+        }
+    }
+    
 }

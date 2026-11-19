@@ -68,4 +68,29 @@ public class ColEmail {
             throw new PessoaException("Ocorreu um erro durante a busca: " + e.getMessage());
         }
     }
+    
+    public int obterIDEmail(Connection conn, Email email, String nomeTabela) throws SQLException, PessoaException {
+        EmailDAO emailDAO = new EmailDAO();
+        
+        try {
+            return emailDAO.obterIDEmail(conn, email, nomeTabela);
+        } catch (SQLException e) {
+            throw new SQLException(e.getMessage());
+        } catch (PessoaException e) {
+            throw new PessoaException("Ocorreu um erro durante a busca: " + e.getMessage());
+        }
+    }
+    
+    public boolean atualizarEmail(Connection conn, Email email, String nomeTabela) throws SQLException, PessoaException {
+        EmailDAO emailDAO = new EmailDAO();
+        
+        try {
+            int idEmail = emailDAO.obterIDEmail(conn, email, nomeTabela);
+            return emailDAO.atualizarEmail(conn, email, nomeTabela, idEmail);
+        } catch (SQLException e) {
+            throw new SQLException(e.getMessage());
+        } catch (PessoaException e) {
+            throw new PessoaException("Ocorreu um erro durante a busca: " + e.getMessage());
+        }
+    }
 }

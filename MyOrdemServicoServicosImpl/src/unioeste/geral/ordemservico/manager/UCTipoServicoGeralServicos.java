@@ -10,6 +10,7 @@ import java.util.List;
 import unioeste.apoio.bd.ConnectionFactory;
 import unioeste.geral.ordemservico.col.ColTipoServico;
 import unioeste.geral.ordemservico.bo.TipoServico;
+import unioeste.geral.ordemservico.exception.OrdemServicoException;
 
 /**
  *
@@ -25,9 +26,14 @@ public class UCTipoServicoGeralServicos {
                 int idTipoServico = colTipoServico.cadastrarTipoServico(conn, nome, valor);
                 conn.commit();
                 return idTipoServico;
-            } catch (SQLException e) {
+            } catch (Exception e) {
                 conn.rollback();
-                throw new SQLException(e.getMessage(), e);
+                
+                if(e instanceof SQLException) {
+                    throw new OrdemServicoException(e.getMessage(), e);
+                }
+                
+                throw e;
             }
         } 
     }
@@ -40,9 +46,14 @@ public class UCTipoServicoGeralServicos {
                 List<TipoServico> tipoServicos = colTipoServico.recuperarTipoServicos(conn);
                 conn.commit();
                 return tipoServicos;
-            } catch (SQLException e) {
+            } catch (Exception e) {
                 conn.rollback();
-                throw new SQLException(e.getMessage(), e);
+                
+                if(e instanceof SQLException) {
+                    throw new OrdemServicoException(e.getMessage(), e);
+                }
+                
+                throw e;
             }
         }
     }

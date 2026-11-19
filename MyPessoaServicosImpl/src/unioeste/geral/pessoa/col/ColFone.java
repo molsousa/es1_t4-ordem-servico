@@ -97,5 +97,18 @@ public class ColFone {
             throw new PessoaException("Ocorreu um erro durante a busca: " + e.getMessage());
         }
     }
-
+    
+    public boolean atualizarFone(Connection conn, Fone fone, String nomeTabela) throws SQLException, PessoaException {
+        
+        try {
+            FoneDAO foneDAO = new FoneDAO();
+            
+            int idFone = foneDAO.obterIDFone(conn, fone, nomeTabela);
+            return foneDAO.atualizarFone(conn, fone, nomeTabela, idFone);
+        } catch (SQLException e) {
+            throw new SQLException(e.getMessage(), e);
+        } catch (PessoaException e) {
+            throw new PessoaException("Ocorreu um erro ao atualizar fone: " + e.getMessage(), e);
+        }
+    }
 }

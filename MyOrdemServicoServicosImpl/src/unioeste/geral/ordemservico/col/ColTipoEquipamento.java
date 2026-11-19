@@ -64,4 +64,21 @@ public class ColTipoEquipamento {
             throw new OrdemServicoException(e.getMessage(), e);
         }
     }
+    
+    public int recuperarIDTipoEquipamento(Connection conn, TipoEquipamento tipoEquipamento) throws Exception {
+        
+        TipoEquipamentoDAO tipoEquipamentoDAO = new TipoEquipamentoDAO();
+        
+        if(tipoEquipamento.getNome().isEmpty()) {
+            throw new TipoEquipamentoException(TipoEquipamentoException.CodigoErro.NOME_INVALIDO, tipoEquipamento.getNome());
+        }
+        
+        try {
+            return tipoEquipamentoDAO.buscarIDTipoEquipamento(conn, tipoEquipamento);
+        } catch (SQLException e) {
+            throw new SQLException(e.getMessage(), e);
+        } catch (OrdemServicoException e) {
+            throw new OrdemServicoException(e.getMessage(), e);
+        }
+    }
 }

@@ -81,4 +81,39 @@ public class FoneDAO {
 
         return fones;
     }
+    
+    public int obterIDFone(Connection conn, Fone fone, String nomeTabela) throws SQLException, PessoaException {
+        
+        String SQL = "SELECT * FROM \"Fone"+nomeTabela+"\" WHERE nro_fone = ? AND nro_ddd = ?";
+        
+        try (PreparedStatement stmt = conn.prepareStatement(SQL)) {
+            stmt.setString(1, fone.getNro());
+            stmt.setInt(2, Integer.parseInt(fone.getDdd().getNro()));
+            
+            try (ResultSet rs = stmt.executeQuery()) {
+                if(rs.next()) {
+                    return rs.getInt("id_fone_"+nomeTabela);
+                }
+            }
+        } catch (SQLException e) {
+            throw new SQLException("Erro ao buscar telefone no banco: " + e.getMessage(), e);
+        }
+        
+        throw new PessoaException("Telefone não encontrado");
+    }
+    
+    public boolean atualizarFone(Connection conn, Fone fone, String nomeTabela, int idFone) throws SQLException, PessoaException {
+        
+        String SQL = "UPDATE \"Fone"+nomeTabela+"\" SET nro_fone = ?, nro_ddi = ?, nro_ddd = ? WHERE id_fone_"+nomeTabela+" = ?";
+        
+        try (PreparedStatement stmt = conn.prepareStatement(SQL)) {
+            stmt.setString(1, fone.getNro());
+            stmt.setInt(2, Integer.parseInt(fone.getDdi().getNro()));
+            stmt.setInt(3, Integer.parseInt(fone.getDdd().getNro()));
+            stmt.setInt(4, idFone);
+            
+            int linhasAfetadas = stmt.executeUpdate();
+            return linhasAfetadas > 0;
+        }
+    }
 }

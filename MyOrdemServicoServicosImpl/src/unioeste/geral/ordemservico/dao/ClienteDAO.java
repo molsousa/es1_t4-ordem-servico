@@ -20,6 +20,7 @@ import unioeste.geral.pessoa.bo.EnderecoEspecifico;
 import unioeste.geral.pessoa.bo.Fone;
 import unioeste.geral.pessoa.col.ColEmail;
 import unioeste.geral.pessoa.col.ColFone;
+import unioeste.geral.pessoa.exception.PessoaException;
 
 /**
  *
@@ -106,8 +107,16 @@ public class ClienteDAO {
                     cliente.setCpf(cpf);
                     id = rs.getInt("id_cliente");
 
-                    fones = colFone.obterFones(conn, id, "Cliente");
-                    emails = colEmail.obterEmails(conn, id, "Cliente");
+                    try {
+                        fones = colFone.obterFones(conn, id, "Cliente");
+                    } catch (PessoaException e) {
+                        fones = null;
+                    }
+                    try {   
+                        emails = colEmail.obterEmails(conn, id, "Cliente");
+                    } catch (PessoaException e) {
+                        emails = null;
+                    }
 
                     cliente.setEnderecoEspecifico(new EnderecoEspecifico());
 
@@ -210,5 +219,21 @@ public class ClienteDAO {
         }
         
         return clientes;
+    }
+    
+    public boolean atualizarCliente(Connection conn, int idCliente, Cliente cliente) throws Exception {
+        String SQL = "UPDATE \"Cliente\" SET nome_cliente = ?, cpf = ?, nro_endereco = ?, comp_endereco = ? WHERE id_cliente = ?";
+        
+        try (PreparedStatement stmt = conn.prepareStatement(SQL)) {
+            stmt.setString(1, cliente.getNome());
+            stmt.setString(2, cliente.getCpf());
+            stmt.setLong(3, cliente.getEnderecoEspecifico().getNroEndereco());
+            stmt.setString(4, cliente.getEnderecoEspecifico().getComplemento());
+            stmt.setInt(5, idCliente);
+            
+            int linhasAfetadas = stmt.executeUpdate();
+            
+            return linhasAfetadas > 0;
+        }
     }
 }

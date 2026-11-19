@@ -18,6 +18,7 @@ import unioeste.geral.pessoa.bo.EnderecoEspecifico;
 import unioeste.geral.pessoa.bo.Fone;
 import unioeste.geral.pessoa.col.ColEmail;
 import unioeste.geral.pessoa.col.ColFone;
+import unioeste.geral.pessoa.exception.PessoaException;
 
 /**
  *
@@ -46,8 +47,17 @@ public class TecnicoDAO {
                     
                     tecnico.setCpf(rs.getString("cpf"));
                     
-                    fones = colFone.obterFones(conn, id, "Tecnico");
-                    emails = colEmail.obterEmails(conn, id, "Tecnico");
+                    try {
+                        fones = colFone.obterFones(conn, id, "Tecnico");
+                    } catch (PessoaException e) {
+                        fones = null;
+                    }
+                    
+                    try {
+                        emails = colEmail.obterEmails(conn, id, "Tecnico");
+                    } catch (PessoaException e) {
+                        emails = null;
+                    }
                     
                     tecnico.setEnderecoEspecifico(new EnderecoEspecifico());
                     

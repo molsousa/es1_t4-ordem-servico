@@ -23,9 +23,9 @@ import unioeste.geral.ordemservico.exception.OrdemServicoException;
  */
 public class OrdemServicoDAO {
     
-    public int cadastrarOrdemServico(Connection conn, int idCliente, int idTipoEquipamento, int idStatusOS, OrdemServico os) throws Exception {
+    public boolean cadastrarOrdemServico(Connection conn, int idCliente, int idTipoEquipamento, int idStatusOS, OrdemServico os) throws Exception {
         String SQL = "INSERT INTO \"OrdemServico\" (dt_emissao, desc_problema, id_cliente, id_tipo_equipamento, id_status_os) "
-                + "VALUES (?,?,?,?,?) RETURNING nro_os";
+                + "VALUES (?,?,?,?,?)";
         
         try (PreparedStatement stmt = conn.prepareStatement(SQL)) {
             
@@ -35,16 +35,12 @@ public class OrdemServicoDAO {
             stmt.setInt(4, idTipoEquipamento);
             stmt.setInt(5, idStatusOS);
             
-            try (ResultSet rs = stmt.executeQuery()) {
-                if (rs.next()) {
-                    return rs.getInt("nro_os");
-                }
-            }
+            int linhasAfetadas = stmt.executeUpdate();
+            
+            return linhasAfetadas > 0;
         } catch (SQLException e) {
             throw new SQLException("Erro ao cadastrar ordem de serviço no banco: " + e.getMessage(), e);
         }
-        
-        throw new OrdemServicoException("Não foi possível cadastrar ordem de serviço no banco");
     }
     
     public OrdemServico obterOrdemServico(Connection conn, int nroOS) throws Exception {
@@ -101,5 +97,20 @@ public class OrdemServicoDAO {
         }
         
         throw new OrdemServicoException("Não foi possível obter ordem de serviço do banco");
+    }
+    
+    public boolean atualizarOSTecnico(Connection conn, int idTecnico, int nroOS) throws Exception {
+        String SQL = "UPDATE \"OrdemServico\" SET id_tecnico = ? WHERE nro_os = ?";
+        
+        try (PreparedStatement stmt = conn.prepareStatement(SQL)) {
+            stmt.setInt(1, idTecnico);
+            stmt.setInt(2, nroOS);
+            
+            int linhasAfetadas = stmt.executeUpdate();
+            
+            return linhasAfetadas > 0;
+        } catch (SQLException e) {
+            throw new SQLException("Erro ao adicionar técnico a ordem de serviço: " + e.getMessage(), e);
+        }
     }
 }

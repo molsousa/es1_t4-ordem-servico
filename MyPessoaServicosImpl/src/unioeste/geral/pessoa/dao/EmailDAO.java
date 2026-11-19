@@ -69,5 +69,34 @@ public class EmailDAO {
 
         return emails;
     }
-
+    
+    public int obterIDEmail(Connection conn, Email email, String nomeTabela) throws SQLException, PessoaException {
+        
+        String SQL = "SELECT * FROM \"Email"+nomeTabela+"\" WHERE endereco = ?";
+        
+        try (PreparedStatement stmt = conn.prepareStatement(SQL)) {
+            stmt.setString(1, email.getEndereco());
+            
+            try (ResultSet rs = stmt.executeQuery()) {
+                return rs.getInt("id_email_"+nomeTabela);
+            }
+        } catch (SQLException e) {
+            throw new SQLException("Erro ao buscar email: " + e.getMessage(), e);
+        }
+    }
+    
+    public boolean atualizarEmail(Connection conn, Email email, String nomeTabela, int id) throws SQLException, PessoaException {
+        
+        String SQL = "UPDATE \"Email"+nomeTabela+"\" SET endereco = ? WHERE id_email_"+nomeTabela+" = ?";
+        
+        try (PreparedStatement stmt = conn.prepareStatement(SQL)) {
+            stmt.setString(1, email.getEndereco());
+            stmt.setInt(2, id);
+            
+            int linhasAfetadas = stmt.executeUpdate();
+            return linhasAfetadas > 0;
+        } catch (SQLException e) {
+            throw new SQLException(e.getMessage());
+        }
+    }
 }

@@ -10,6 +10,7 @@ import java.util.List;
 import unioeste.apoio.bd.ConnectionFactory;
 import unioeste.geral.ordemservico.bo.Cliente;
 import unioeste.geral.ordemservico.col.ColCliente;
+import unioeste.geral.ordemservico.exception.OrdemServicoException;
 import unioeste.geral.pessoa.bo.Email;
 import unioeste.geral.pessoa.bo.EnderecoEspecifico;
 import unioeste.geral.pessoa.bo.Fone;
@@ -30,9 +31,14 @@ public class UCClienteGeralServicos {
 
                 conn.commit();
                 return colCliente.recuperarClientePorID(conn, idCliente);
-            } catch (SQLException e) {
+            } catch (Exception  e) {
                 conn.rollback();
-                throw new SQLException(e.getMessage(), e);
+                
+                if(e instanceof SQLException) {
+                    throw new OrdemServicoException(e.getMessage(), e);
+                }
+                
+                throw e;
             }
         }
     }
@@ -46,9 +52,14 @@ public class UCClienteGeralServicos {
 
                 conn.commit();
                 return cliente;
-            } catch (SQLException e) {
+            } catch (Exception e) {
                 conn.rollback();
-                throw new SQLException(e.getMessage(), e);
+                
+                if(e instanceof SQLException) {
+                    throw new OrdemServicoException(e.getMessage(), e);
+                }
+                
+                throw e;
             }
         }
     }
@@ -61,10 +72,25 @@ public class UCClienteGeralServicos {
                 List<Cliente> clientes = colCliente.recuperarClientePorPadrao(conn, padrao);
                 conn.commit();
                 return clientes;
-            } catch (SQLException e) {
+            } catch (Exception e) {
                 conn.rollback();
-                throw new SQLException(e.getMessage(), e);
+                
+                if(e instanceof SQLException) {
+                    throw new OrdemServicoException(e.getMessage(), e);
+                }
+                
+                throw e;
             }
         }
     }
+    
+    /*
+    public boolean atualizarCliente(Cliente cliente) throws Exception {
+        
+        try (Connection conn = ConnectionFactory.getConnection()) {
+            try {
+                
+            }
+        }
+    }*/
 }
