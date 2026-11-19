@@ -5,6 +5,7 @@
 package unioeste.geral.ordemservico.col;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
 import unioeste.geral.ordemservico.bo.OSProduto;
@@ -17,8 +18,23 @@ import unioeste.geral.ordemservico.exception.OrdemServicoException;
  */
 public class ColOSProduto {
     
-    public List<OSProduto> recuperarOSProdutos(Connection conn, int nroOS) throws Exception {
+    public double cadastrarOSProduto(Connection conn, int nroOS, int idProduto, double valorCobrado, int qtd) throws Exception {
         
+        try {
+            OSProdutoDAO ospdao = new OSProdutoDAO();
+            
+            if(ospdao.cadastrarOSProduto(conn, nroOS, idProduto, valorCobrado, qtd)) {
+                return (valorCobrado * qtd);
+            } else {
+                throw new OrdemServicoException("Ocorreu um erro no cadastro do produto na ordem de serviço");
+            }
+        } catch (SQLException e) {
+            throw new SQLException(e.getMessage(), e);
+        }
+    }
+
+    public List<OSProduto> recuperarOSProdutos(Connection conn, int nroOS) throws Exception {
+
         try {
             OSProdutoDAO ospdao = new OSProdutoDAO();
             return ospdao.obterOSProdutos(conn, nroOS);
@@ -28,4 +44,5 @@ public class ColOSProduto {
             throw new OrdemServicoException(e.getMessage(), e);
         }
     }
+
 }

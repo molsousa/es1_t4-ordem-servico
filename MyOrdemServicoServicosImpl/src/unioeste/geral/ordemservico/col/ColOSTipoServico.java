@@ -17,6 +17,16 @@ import unioeste.geral.ordemservico.exception.OrdemServicoException;
  */
 public class ColOSTipoServico {
     
+    public boolean cadastrarOSTipoServico(Connection conn, int nroOS, int idTipoServico, double valorCobrado) throws Exception {
+        
+        try {
+            OSTipoServicoDAO ostsdao = new OSTipoServicoDAO();
+            return ostsdao.cadastrarOSTipoServico(conn, nroOS, idTipoServico, valorCobrado);
+        } catch (SQLException e) {
+            throw new SQLException(e.getMessage(), e);
+        }
+    }
+    
     public List<OSTipoServico> recuperarOSTipoServicos(Connection conn, int nroOS) throws Exception {
         
         try {

@@ -24,7 +24,7 @@
             }
             .grid-3 {
                 display: grid;
-                grid-template-columns: 2fr 1fr 1fr;
+                grid-template-columns: 1fr 1fr 1fr;
                 gap: 10px;
                 margin-bottom: 10px;
             }
@@ -34,7 +34,7 @@
                 gap: 10px;
                 margin-bottom: 10px;
             }
-            input {
+            input, select {
                 padding: 8px;
                 width: 100%;
                 box-sizing: border-box;
@@ -111,7 +111,85 @@
         <div class="container">
             <h2>Gestão de Ordens de Serviço</h2>
 
-            <!-- ================= PRODUTO (NOVO) ================= -->
+            <!-- ================= ORDEM DE SERVIÇO ================= -->
+            <h3 class="section-title" style="margin-top: 0;">Ordem de Serviço</h3>
+
+            <fieldset>
+                <legend>Buscar OS por Número (GET)</legend>
+                <div style="display: flex; gap: 10px;">
+                    <input type="number" id="nroOSInput" placeholder="Número da OS (ex: 1)" min="1" style="width: 200px;">
+                    <button class="btn-busca btn-padrao" onclick="buscarOrdemServico()">Buscar OS</button>
+                </div>
+            </fieldset>
+
+            <fieldset>
+                <legend>Cadastrar Nova OS (POST)</legend>
+
+                <h4>Dados Básicos</h4>
+                <div class="grid-2">
+                    <select id="osStatus">
+                        <option value="1">Aberta</option>
+                        <option value="2">Em andamento</option>
+                        <option value="3">Aguardando peça</option>
+                        <option value="4">Concluída</option>
+                        <option value="5">Cancelada</option>
+                        <option value="6">Emitida</option>
+                    </select>
+                    <input type="text" id="osDescProblema" placeholder="Descrição do Problema">
+                </div>
+
+                <h4>Vínculos</h4>
+                <div class="grid-2">
+                    <input type="text" id="osCpfCliente" placeholder="CPF do Cliente">
+                    <input type="text" id="osCpfTecnico" placeholder="CPF do Técnico">
+                </div>
+
+                <!-- Removido o ID do Usuário, mantido apenas Equipamento e Data -->
+                <div class="grid-2">
+                    <input type="number" id="osCodTipoEquipamento" placeholder="Código do Tipo de Equipamento">
+                    <input type="date" id="osDtEmissao" title="Data de Emissão">
+                </div>
+
+                <button onclick="cadastrarOrdemServico()">Cadastrar Ordem de Serviço</button>
+            </fieldset>
+
+            <fieldset>
+                <legend>Atualizar Técnico da OS (PUT)</legend>
+                <div class="grid-2">
+                    <input type="number" id="atualizarNroOS" placeholder="Número da OS (ex: 1007)" min="1">
+                    <input type="number" id="atualizarIdTecnico" placeholder="ID do Técnico (ex: 3)" min="1">
+                </div>
+                <button onclick="atualizarTecnicoOS()">Atualizar Técnico</button>
+            </fieldset>
+
+            <fieldset>
+                <legend>Adicionar Produto à OS (POST)</legend>
+                <div class="grid-2">
+                    <input type="number" id="osProdNroOS" placeholder="Número da OS (ex: 1007)" min="1">
+                    <input type="number" id="osProdIdProduto" placeholder="ID do Produto (ex: 1)" min="1">
+                </div>
+                <div class="grid-2">
+                    <input type="number" id="osProdQtd" placeholder="Quantidade (ex: 2)" min="1" value="1">
+                    <input type="number" step="0.01" id="osProdValorCobrado" placeholder="Valor unitário cobrado (ex: 250.00)">
+                </div>
+                <button onclick="adicionarProdutoOS()">Adicionar Produto à OS</button>
+            </fieldset>
+
+            <fieldset>
+                <legend>Adicionar Tipo de Serviço à OS (POST)</legend>
+                <div class="grid-2">
+                    <input type="number" id="osTSNroOS" placeholder="Número da OS (ex: 1007)" min="1">
+                    <input type="number" id="osTSIdTipoServico" placeholder="ID do Tipo de Serviço (ex: 1)" min="1">
+                </div>
+                <div class="grid-2">
+                    <input type="number" step="0.01" id="osTSValorCobrado" placeholder="Valor cobrado do serviço (ex: 150.00)">
+                </div>
+                <button onclick="adicionarTipoServicoOS()">Adicionar Tipo de Serviço à OS</button>
+            </fieldset>
+
+            <hr style="border: 0; border-top: 2px dashed #ccc; margin: 30px 0;">
+
+            <!-- ================= PRODUTO ================= -->
             <h3 class="section-title" style="margin-top: 0;">Produto</h3>
 
             <fieldset>
@@ -250,7 +328,179 @@
                 divResultado.classList.add(isError ? 'error-text' : 'success-text');
             }
 
-            // --- FUNÇÕES DE PRODUTO (NOVAS) ---
+            // --- FUNÇÕES DE ORDEM DE SERVIÇO ---
+
+            async function buscarOrdemServico() {
+                const nroOS = document.getElementById('nroOSInput').value.trim();
+                if (!nroOS)
+                    return alert("Digite o número da OS.");
+                const divResultado = document.getElementById('resultado');
+                divResultado.textContent = "Buscando OS...";
+                divResultado.classList.remove('error-text', 'success-text');
+
+                try {
+                    const response = await fetch(`${BASE_URL}/ordem-servico/obter?nro_os=${encodeURIComponent(nroOS)}`);
+                    const data = await response.json();
+                    exibirResultado(response.ok ? data : {erro: data.message}, !response.ok);
+                } catch (error) {
+                    exibirResultado({erro: "Erro na rede: " + error.message}, true);
+                }
+            }
+
+            async function cadastrarOrdemServico() {
+                const divResultado = document.getElementById('resultado');
+                divResultado.textContent = "Cadastrando OS...";
+                divResultado.classList.remove('error-text', 'success-text');
+
+                const payload = {
+                    descProblema: document.getElementById('osDescProblema').value,
+                    statusOS: {
+                        id: parseInt(document.getElementById('osStatus').value)
+                    },
+                    dtEmissao: document.getElementById('osDtEmissao').value ? new Date(document.getElementById('osDtEmissao').value).getTime() : new Date().getTime(),
+                    cliente: {
+                        cpf: document.getElementById('osCpfCliente').value
+                    },
+                    tecnico: {
+                        cpf: document.getElementById('osCpfTecnico').value
+                    },
+                    tipoEquipamento: {
+                        codigo: document.getElementById('osCodTipoEquipamento').value
+                    },
+                    osTipoServicos: [],
+                    osProdutos: []
+                };
+
+                try {
+                    const response = await fetch(`${BASE_URL}/ordem-servico/cadastrar`, {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify(payload)
+                    });
+
+                    const data = await response.json();
+                    exibirResultado(response.ok ? data : {erro: data.message}, !response.ok);
+
+                    if (response.ok) {
+                        document.getElementById('osDescProblema').value = '';
+                        document.getElementById('osCpfCliente').value = '';
+                        document.getElementById('osCpfTecnico').value = '';
+                        document.getElementById('osCodTipoEquipamento').value = '';
+                    }
+                } catch (error) {
+                    exibirResultado({erro: error.message}, true);
+                }
+            }
+
+            async function atualizarTecnicoOS() {
+                const nroOS = parseInt(document.getElementById('atualizarNroOS').value);
+                const idTecnico = parseInt(document.getElementById('atualizarIdTecnico').value);
+
+                if (!nroOS || !idTecnico)
+                    return alert("Preencha o nº da OS e o ID do técnico.");
+
+                const divResultado = document.getElementById('resultado');
+                divResultado.textContent = "Atualizando...";
+                divResultado.classList.remove('error-text', 'success-text');
+
+                try {
+                    const response = await fetch(`${BASE_URL}/ordem-servico/atualizar/tecnico`, {
+                        method: 'PUT',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({nroOS, idTecnico})
+                    });
+
+                    const data = await response.json();
+
+                    if (response.ok && data === false) {
+                        exibirResultado({message: "OS " + nroOS + " não encontrada ou nenhum registro foi atualizado."}, true);
+                        return;
+                    }
+
+                    exibirResultado(response.ok ? data : {erro: data.message}, !response.ok);
+
+                    if (response.ok && data === true) {
+                        document.getElementById('atualizarNroOS').value = '';
+                        document.getElementById('atualizarIdTecnico').value = '';
+                    }
+                } catch (error) {
+                    exibirResultado({erro: error.message}, true);
+                }
+            }
+
+            async function adicionarProdutoOS() {
+                const nroOS = parseInt(document.getElementById('osProdNroOS').value);
+                const idProduto = parseInt(document.getElementById('osProdIdProduto').value);
+                const qtdProduto = parseInt(document.getElementById('osProdQtd').value);
+                const valorCobradoProduto = parseFloat(document.getElementById('osProdValorCobrado').value);
+
+                if (!nroOS || !idProduto || !qtdProduto || isNaN(valorCobradoProduto)) {
+                    return alert("Preencha nº da OS, ID do produto, quantidade e valor cobrado.");
+                }
+
+                const divResultado = document.getElementById('resultado');
+                divResultado.textContent = "Adicionando produto...";
+                divResultado.classList.remove('error-text', 'success-text');
+
+                try {
+                    const response = await fetch(`${BASE_URL}/ordem-servico/atualizar/os-produto`, {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({nroOS, idProduto, qtdProduto, valorCobradoProduto})
+                    });
+
+                    const data = await response.json();
+                    exibirResultado(response.ok ? data : {erro: data.message}, !response.ok);
+
+                    if (response.ok) {
+                        document.getElementById('osProdIdProduto').value = '';
+                        document.getElementById('osProdQtd').value = '1';
+                        document.getElementById('osProdValorCobrado').value = '';
+                    }
+                } catch (error) {
+                    exibirResultado({erro: error.message}, true);
+                }
+            }
+
+            async function adicionarTipoServicoOS() {
+                const nroOS = parseInt(document.getElementById('osTSNroOS').value);
+                const idTipoServico = parseInt(document.getElementById('osTSIdTipoServico').value);
+                const valorCobradoTS = parseFloat(document.getElementById('osTSValorCobrado').value);
+
+                if (!nroOS || !idTipoServico || isNaN(valorCobradoTS)) {
+                    return alert("Preencha nº da OS, ID do tipo de serviço e valor cobrado.");
+                }
+
+                const divResultado = document.getElementById('resultado');
+                divResultado.textContent = "Adicionando tipo de serviço...";
+                divResultado.classList.remove('error-text', 'success-text');
+
+                try {
+                    const response = await fetch(`${BASE_URL}/ordem-servico/atualizar/os-tipo-servico`, {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({nroOS, idTipoServico, valorCobradoTS})
+                    });
+
+                    const data = await response.json();
+
+                    if (response.ok && data === false) {
+                        exibirResultado({message: "Não foi possível adicionar o tipo de serviço à OS " + nroOS + "."}, true);
+                        return;
+                    }
+
+                    exibirResultado(response.ok ? data : {erro: data.message}, !response.ok);
+
+                    if (response.ok && data === true) {
+                        document.getElementById('osTSIdTipoServico').value = '';
+                        document.getElementById('osTSValorCobrado').value = '';
+                    }
+                } catch (error) {
+                    exibirResultado({erro: error.message}, true);
+                }
+            }
+
+            // --- FUNÇÕES DE PRODUTO ---
 
             async function listarProdutos() {
                 const divResultado = document.getElementById('resultado');
@@ -260,12 +510,7 @@
                 try {
                     const response = await fetch(`${BASE_URL}/produto/listar`);
                     const data = await response.json();
-
-                    if (!response.ok) {
-                        exibirResultado({erro: data.message || "Erro ao listar produtos"}, true);
-                    } else {
-                        exibirResultado(data, false);
-                    }
+                    exibirResultado(response.ok ? data : {erro: data.message}, !response.ok);
                 } catch (error) {
                     exibirResultado({erro: error.message}, true);
                 }
@@ -274,32 +519,22 @@
             async function cadastrarProduto() {
                 const nome = document.getElementById('nomeProduto').value.trim();
                 const valor = document.getElementById('valorProduto').value.trim();
-
                 if (!nome || !valor)
                     return alert("Preencha o nome e o valor do produto.");
-
                 const divResultado = document.getElementById('resultado');
                 divResultado.textContent = "Cadastrando...";
                 divResultado.classList.remove('error-text', 'success-text');
 
-                // O Servlet usa readValue, então enviamos um JSON
-                const payload = {
-                    nome: nome,
-                    valor: parseFloat(valor)
-                };
+                const payload = {nome: nome, valor: parseFloat(valor)};
 
                 try {
                     const response = await fetch(`${BASE_URL}/produto/cadastrar`, {
                         method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
+                        headers: {'Content-Type': 'application/json'},
                         body: JSON.stringify(payload)
                     });
-
                     const data = await response.json();
                     exibirResultado(response.ok ? data : {erro: data.message}, !response.ok);
-
                     if (response.ok) {
                         document.getElementById('nomeProduto').value = '';
                         document.getElementById('valorProduto').value = '';
@@ -319,12 +554,7 @@
                 try {
                     const response = await fetch(`${BASE_URL}/tipo-servico/listar`);
                     const data = await response.json();
-
-                    if (!response.ok) {
-                        exibirResultado({erro: data.message || "Erro ao listar"}, true);
-                    } else {
-                        exibirResultado(data, false);
-                    }
+                    exibirResultado(response.ok ? data : {erro: data.message}, !response.ok);
                 } catch (error) {
                     exibirResultado({erro: error.message}, true);
                 }
@@ -333,18 +563,13 @@
             async function cadastrarTipoServico() {
                 const nome = document.getElementById('nomeTipoServico').value.trim();
                 const valor = document.getElementById('valorTipoServico').value.trim();
-
                 if (!nome || !valor)
                     return alert("Preencha o nome e o valor do serviço.");
-
                 const divResultado = document.getElementById('resultado');
                 divResultado.textContent = "Cadastrando...";
                 divResultado.classList.remove('error-text', 'success-text');
 
-                const payload = {
-                    nome: nome,
-                    valor: parseFloat(valor)
-                };
+                const payload = {nome: nome, valor: parseFloat(valor)};
 
                 try {
                     const response = await fetch(`${BASE_URL}/tipo-servico/cadastrar`, {
@@ -352,10 +577,8 @@
                         headers: {'Content-Type': 'application/json'},
                         body: JSON.stringify(payload)
                     });
-
                     const data = await response.json();
                     exibirResultado(response.ok ? data : {erro: data.message}, !response.ok);
-
                     if (response.ok) {
                         document.getElementById('nomeTipoServico').value = '';
                         document.getElementById('valorTipoServico').value = '';
@@ -375,12 +598,7 @@
                 try {
                     const response = await fetch(`${BASE_URL}/tipo-equipamento/listar`);
                     const data = await response.json();
-
-                    if (!response.ok) {
-                        exibirResultado({erro: data.message || "Erro ao listar"}, true);
-                    } else {
-                        exibirResultado(data, false);
-                    }
+                    exibirResultado(response.ok ? data : {erro: data.message}, !response.ok);
                 } catch (error) {
                     exibirResultado({erro: error.message}, true);
                 }
@@ -390,7 +608,6 @@
                 const cod = document.getElementById('codTipoEquipamento').value.trim();
                 if (!cod)
                     return alert("Por favor, digite um código.");
-
                 const divResultado = document.getElementById('resultado');
                 divResultado.textContent = "Buscando...";
                 divResultado.classList.remove('error-text', 'success-text');
@@ -398,12 +615,7 @@
                 try {
                     const response = await fetch(`${BASE_URL}/tipo-equipamento/codigo?cod_equipamento=${encodeURIComponent(cod)}`);
                     const data = await response.json();
-
-                    if (!response.ok) {
-                        exibirResultado({erro: data.message || "Tipo de Equipamento não encontrado"}, true);
-                    } else {
-                        exibirResultado(data, false);
-                    }
+                    exibirResultado(response.ok ? data : {erro: data.message}, !response.ok);
                 } catch (error) {
                     exibirResultado({erro: "Erro na rede: " + error.message}, true);
                 }
@@ -413,7 +625,6 @@
                 const nome = document.getElementById('nomeTipoEquipamento').value.trim();
                 if (!nome)
                     return alert("Digite o nome do tipo de equipamento.");
-
                 const divResultado = document.getElementById('resultado');
                 divResultado.textContent = "Cadastrando...";
                 divResultado.classList.remove('error-text', 'success-text');
@@ -427,13 +638,10 @@
                         headers: {'Content-Type': 'application/x-www-form-urlencoded'},
                         body: formData
                     });
-
                     const data = await response.json();
                     exibirResultado(response.ok ? data : {erro: data.message}, !response.ok);
-
-                    if (response.ok) {
+                    if (response.ok)
                         document.getElementById('nomeTipoEquipamento').value = '';
-                    }
                 } catch (error) {
                     exibirResultado({erro: error.message}, true);
                 }
@@ -510,7 +718,6 @@
                         headers: {'Content-Type': 'application/json'},
                         body: JSON.stringify(payload)
                     });
-
                     const data = await response.json();
                     exibirResultado(response.ok ? data : {erro: data.message}, !response.ok);
                 } catch (error) {

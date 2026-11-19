@@ -21,6 +21,23 @@ import unioeste.geral.ordemservico.exception.OrdemServicoException;
  */
 public class OSProdutoDAO {
     
+    public boolean cadastrarOSProduto(Connection conn, int nroOS, int idProduto, double valorCobrado, int qtd) throws Exception {
+        String SQL = "INSERT INTO \"OSProduto\" (nro_os, id_produto, valor_produto, qtd_produto) VALUES (?,?,?,?)";
+        
+        try (PreparedStatement stmt = conn.prepareStatement(SQL)) {
+            stmt.setInt(1, nroOS);
+            stmt.setInt(2, idProduto);
+            stmt.setDouble(3, valorCobrado);
+            stmt.setInt(4, qtd);
+            
+            int linhasAfetadas = stmt.executeUpdate();
+            
+            return linhasAfetadas > 0;
+        } catch(SQLException e) {
+            throw new SQLException("Não foi possível cadastrar os produto");
+        }
+    }
+    
     public List<OSProduto> obterOSProdutos(Connection conn, int nroOS) throws Exception {
         String SQL = "SELECT * FROM \"OSProduto\" WHERE nro_os = ?";
         List<OSProduto> osProdutos = new ArrayList<>();

@@ -113,4 +113,19 @@ public class OrdemServicoDAO {
             throw new SQLException("Erro ao adicionar técnico a ordem de serviço: " + e.getMessage(), e);
         }
     }
+    
+    public boolean atualizarValorTotalOS(Connection conn, int nroOS, double valorTotalOS) throws Exception {
+        String SQL = "UPDATE \"OrdemServico\" SET valor_total_os = ? WHERE nro_os = ?";
+        
+        try (PreparedStatement stmt = conn.prepareStatement(SQL)) {
+            stmt.setDouble(1, valorTotalOS);
+            stmt.setInt(2, nroOS);
+            
+            int linhasAfetadas = stmt.executeUpdate();
+            
+            return linhasAfetadas > 0;
+        } catch (SQLException e) {
+            throw new SQLException("Erro ao atribuir valor total a ordem de serviço: " + e.getMessage(), e);
+        }
+    }
 }

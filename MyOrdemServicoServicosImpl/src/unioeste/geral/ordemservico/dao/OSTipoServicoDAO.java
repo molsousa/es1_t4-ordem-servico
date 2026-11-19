@@ -21,6 +21,22 @@ import unioeste.geral.ordemservico.exception.OrdemServicoException;
  */
 public class OSTipoServicoDAO {
     
+    public boolean cadastrarOSTipoServico(Connection conn, int nroOS, int idTipoServico, double valorCobrado) throws Exception {
+        String SQL = "INSERT INTO \"OSTipoServico\" (nro_os, id_tipo_servico, valor_tipo_servico) VALUES (?,?,?)";
+        
+        try (PreparedStatement stmt = conn.prepareStatement(SQL)) {
+            stmt.setInt(1, nroOS);
+            stmt.setInt(2, idTipoServico);
+            stmt.setDouble(3, valorCobrado);
+            
+            int linhasAfetadas = stmt.executeUpdate();
+            
+            return linhasAfetadas > 0;
+        } catch(SQLException e) {
+            throw new SQLException("Não foi possível cadastrar os tipo serviço");
+        }
+    }
+    
     public List<OSTipoServico> obterOSTipoServicos(Connection conn, int nroOS) throws Exception {
         String SQL = "SELECT * FROM \"OSTipoServico\" WHERE nro_os = ?";
         List<OSTipoServico> osTipoServicos = new ArrayList<>();

@@ -7,8 +7,11 @@ package unioeste.geral.ordemservico.col;
 import java.sql.Connection;
 import java.sql.SQLException;
 import unioeste.geral.ordemservico.bo.Cliente;
+import unioeste.geral.ordemservico.bo.OSProduto;
+import unioeste.geral.ordemservico.bo.OSTipoServico;
 import unioeste.geral.ordemservico.bo.OrdemServico;
 import unioeste.geral.ordemservico.bo.Tecnico;
+import unioeste.geral.ordemservico.bo.TipoServico;
 import unioeste.geral.ordemservico.dao.OrdemServicoDAO;
 import unioeste.geral.ordemservico.exception.OrdemServicoException;
 import unioeste.geral.ordemservico.exception.OrdemServicoInvalidoException;
@@ -32,7 +35,6 @@ public class ColOrdemServico {
         try {
             OrdemServicoDAO ordemServicoDAO = new OrdemServicoDAO();
             ColCliente colCliente = new ColCliente();
-            ColStatusOS colStatusOS = new ColStatusOS();
             
             Cliente cliente = new Cliente();
             cliente.setCpf(cpf);
@@ -51,6 +53,7 @@ public class ColOrdemServico {
         OrdemServicoDAO ordemServicoDAO = new OrdemServicoDAO();
         
         try {
+            atualizarValorTotalOS(conn, nroOS);
             return ordemServicoDAO.obterOrdemServico(conn, nroOS);
         } catch (SQLException e) {
             throw new SQLException(e.getMessage(), e);
@@ -69,4 +72,26 @@ public class ColOrdemServico {
         }
     }
     
+    public double atualizarValorTotalOS(Connection conn, int nroOS) throws Exception {
+        ColOSProduto cosp = new ColOSProduto();
+        ColOSTipoServico costs = new ColOSTipoServico();
+        OrdemServicoDAO ordemServicoDAO = new OrdemServicoDAO();
+        double valorTotal = 0;
+        
+        try {
+            for(OSTipoServico osts : costs.recuperarOSTipoServicos(conn, nroOS)) {
+                valorTotal += osts.getValor();
+            }
+            
+            for(OSProduto osp : cosp.recuperarOSProdutos(conn, nroOS)) {
+                double valorTotalProdutos = osp.getQtd() * osp.getValor();
+                valorTotal += valorTotalProdutos;
+            }
+            
+            ordemServicoDAO.atualizarValorTotalOS(conn, nroOS, valorTotal);
+            return valorTotal;
+        } catch (SQLException e) {
+            throw new SQLException(e.getMessage(), e);
+        }
+    }
 }

@@ -8,6 +8,8 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import unioeste.apoio.bd.ConnectionFactory;
 import unioeste.geral.ordemservico.bo.OrdemServico;
+import unioeste.geral.ordemservico.col.ColOSProduto;
+import unioeste.geral.ordemservico.col.ColOSTipoServico;
 import unioeste.geral.ordemservico.col.ColOrdemServico;
 import unioeste.geral.ordemservico.exception.OrdemServicoException;
 /**
@@ -62,6 +64,46 @@ public class UCOrdemServicoGeralServicos {
             try {
                 ColOrdemServico colOrdemServico = new ColOrdemServico();
                 boolean sucesso = colOrdemServico.atualizarOSTecnico(conn, idTecnico, nroOS);
+                conn.commit();
+                return sucesso;
+            } catch (Exception e) {
+                conn.rollback();
+                
+                if(e instanceof SQLException) {
+                    throw new OrdemServicoException(e.getMessage(), e);
+                }
+                
+                throw e;
+            }
+        }
+    }
+    
+    public double cadastrarOSProduto(int nroOS, int idProduto, double valorCobrado, int qtd) throws Exception {
+        
+        try (Connection conn = ConnectionFactory.getConnection()) {
+            try {
+                ColOSProduto cosp = new ColOSProduto();
+                double valorTotalProdutos = cosp.cadastrarOSProduto(conn, nroOS, idProduto, valorCobrado, qtd);
+                conn.commit();
+                return valorTotalProdutos;
+            } catch (Exception e) {
+                conn.rollback();
+                
+                if(e instanceof SQLException) {
+                    throw new OrdemServicoException(e.getMessage(), e);
+                }
+                
+                throw e;
+            }
+        }
+    }
+    
+    public boolean cadastrarOSTipoServico(int nroOS, int idTipoServico, double valorCobrado) throws Exception {
+        
+        try (Connection conn = ConnectionFactory.getConnection()) {
+            try {
+                ColOSTipoServico costs = new ColOSTipoServico();
+                boolean sucesso = costs.cadastrarOSTipoServico(conn, nroOS, idTipoServico, valorCobrado);
                 conn.commit();
                 return sucesso;
             } catch (Exception e) {
