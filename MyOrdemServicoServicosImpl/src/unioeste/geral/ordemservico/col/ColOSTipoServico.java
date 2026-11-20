@@ -10,6 +10,7 @@ import java.util.List;
 import unioeste.geral.ordemservico.bo.OSTipoServico;
 import unioeste.geral.ordemservico.dao.OSTipoServicoDAO;
 import unioeste.geral.ordemservico.exception.OrdemServicoException;
+import unioeste.geral.ordemservico.exception.OrdemServicoInvalidoException;
 
 /**
  *
@@ -36,6 +37,34 @@ public class ColOSTipoServico {
             throw new SQLException(e.getMessage(), e);
         } catch (OrdemServicoException e) {
             throw new OrdemServicoException(e.getMessage(), e);
+        }
+    }
+    
+    public boolean removerOSTipoServico(Connection conn, int nroOS) throws Exception {
+        if(nroOS <= 0) {
+            throw new OrdemServicoInvalidoException(OrdemServicoInvalidoException.CodigoErro.NRO_OS_INVALIDA, nroOS);
+        }
+        
+        OSTipoServicoDAO ostsdao = new OSTipoServicoDAO();
+        
+        try {
+            return ostsdao.removerOSTipoServico(conn, nroOS);
+        } catch (SQLException e) {
+            throw new SQLException(e.getMessage(), e);
+        }
+    }
+    
+    public boolean removerTipoServicoOS(Connection conn, int idTipoServico, int nroOS) throws Exception {
+        if(idTipoServico <= 0) {
+            throw new OrdemServicoException("Id do tipo de serviço inválido: " + idTipoServico);
+        }
+        
+        OSTipoServicoDAO ostsdao = new OSTipoServicoDAO();
+        
+        try {
+            return ostsdao.removerTipoServicoOS(conn, idTipoServico, nroOS);
+        } catch (SQLException e) {
+            throw new SQLException(e.getMessage(), e);
         }
     }
 }

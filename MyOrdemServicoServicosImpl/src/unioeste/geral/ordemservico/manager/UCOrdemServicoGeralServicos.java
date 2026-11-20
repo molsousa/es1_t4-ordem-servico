@@ -12,14 +12,15 @@ import unioeste.geral.ordemservico.col.ColOSProduto;
 import unioeste.geral.ordemservico.col.ColOSTipoServico;
 import unioeste.geral.ordemservico.col.ColOrdemServico;
 import unioeste.geral.ordemservico.exception.OrdemServicoException;
+
 /**
  *
  * @author molsousa
  */
 public class UCOrdemServicoGeralServicos {
-    
+
     public boolean cadastrarOrdemServico(OrdemServico os, int idStatusOS) throws Exception {
-        
+
         try (Connection conn = ConnectionFactory.getConnection()) {
             try {
                 ColOrdemServico colOrdemServico = new ColOrdemServico();
@@ -28,18 +29,18 @@ public class UCOrdemServicoGeralServicos {
                 return sucesso;
             } catch (Exception e) {
                 conn.rollback();
-                
-                if(e instanceof SQLException) {
+
+                if (e instanceof SQLException) {
                     throw new OrdemServicoException(e.getMessage(), e);
                 }
-                
+
                 throw e;
             }
         }
     }
-    
+
     public OrdemServico obterOrdemServico(int nroOS) throws Exception {
-        
+
         try (Connection conn = ConnectionFactory.getConnection()) {
             try {
                 ColOrdemServico colOrdemServico = new ColOrdemServico();
@@ -48,18 +49,18 @@ public class UCOrdemServicoGeralServicos {
                 return ordemServico;
             } catch (Exception e) {
                 conn.rollback();
-                
-                if(e instanceof SQLException) {
+
+                if (e instanceof SQLException) {
                     throw new OrdemServicoException(e.getMessage(), e);
                 }
-                
+
                 throw e;
             }
         }
     }
-    
+
     public boolean atualizarTecnicoOS(int idTecnico, int nroOS) throws Exception {
-        
+
         try (Connection conn = ConnectionFactory.getConnection()) {
             try {
                 ColOrdemServico colOrdemServico = new ColOrdemServico();
@@ -68,18 +69,18 @@ public class UCOrdemServicoGeralServicos {
                 return sucesso;
             } catch (Exception e) {
                 conn.rollback();
-                
-                if(e instanceof SQLException) {
+
+                if (e instanceof SQLException) {
                     throw new OrdemServicoException(e.getMessage(), e);
                 }
-                
+
                 throw e;
             }
         }
     }
-    
+
     public double cadastrarOSProduto(int nroOS, int idProduto, double valorCobrado, int qtd) throws Exception {
-        
+
         try (Connection conn = ConnectionFactory.getConnection()) {
             try {
                 ColOSProduto cosp = new ColOSProduto();
@@ -88,18 +89,18 @@ public class UCOrdemServicoGeralServicos {
                 return valorTotalProdutos;
             } catch (Exception e) {
                 conn.rollback();
-                
-                if(e instanceof SQLException) {
+
+                if (e instanceof SQLException) {
                     throw new OrdemServicoException(e.getMessage(), e);
                 }
-                
+
                 throw e;
             }
         }
     }
-    
+
     public boolean cadastrarOSTipoServico(int nroOS, int idTipoServico, double valorCobrado) throws Exception {
-        
+
         try (Connection conn = ConnectionFactory.getConnection()) {
             try {
                 ColOSTipoServico costs = new ColOSTipoServico();
@@ -108,11 +109,71 @@ public class UCOrdemServicoGeralServicos {
                 return sucesso;
             } catch (Exception e) {
                 conn.rollback();
-                
-                if(e instanceof SQLException) {
+
+                if (e instanceof SQLException) {
                     throw new OrdemServicoException(e.getMessage(), e);
                 }
-                
+
+                throw e;
+            }
+        }
+    }
+
+    public boolean removerOrdemServico(int nroOS) throws Exception {
+
+        try (Connection conn = ConnectionFactory.getConnection()) {
+            try {
+                ColOrdemServico colOrdemServico = new ColOrdemServico();
+                boolean sucesso = colOrdemServico.removerOrdemServico(conn, nroOS);
+                conn.commit();
+                return sucesso;
+            } catch (Exception e) {
+                conn.rollback();
+
+                if (e instanceof SQLException) {
+                    throw new OrdemServicoException(e.getMessage(), e);
+                }
+
+                throw e;
+            }
+        }
+    }
+    
+    public boolean removerProdutoOS(int idProduto, int nroOS) throws Exception {
+        
+        try (Connection conn = ConnectionFactory.getConnection()) {
+            try {
+                ColOSProduto colOSProduto = new ColOSProduto();
+                boolean sucesso = colOSProduto.removerProdutoOS(conn, idProduto, nroOS);
+                conn.commit();
+                return sucesso;
+            } catch (Exception e) {
+                conn.rollback();
+
+                if (e instanceof SQLException) {
+                    throw new OrdemServicoException(e.getMessage(), e);
+                }
+
+                throw e;
+            }
+        }
+    }
+    
+    public boolean removerTipoServicoOS(int idTipoServico, int nroOS) throws Exception {
+        
+        try (Connection conn = ConnectionFactory.getConnection()) {
+            try {
+                ColOSTipoServico colOSTipoServico = new ColOSTipoServico();
+                boolean sucesso = colOSTipoServico.removerTipoServicoOS(conn, idTipoServico, nroOS);
+                conn.commit();
+                return sucesso;
+            } catch (Exception e) {
+                conn.rollback();
+
+                if (e instanceof SQLException) {
+                    throw new OrdemServicoException(e.getMessage(), e);
+                }
+
                 throw e;
             }
         }

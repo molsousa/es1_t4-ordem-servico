@@ -13,7 +13,6 @@ import java.util.List;
 import unioeste.geral.ordemservico.bo.OSProduto;
 import unioeste.geral.ordemservico.bo.Produto;
 import unioeste.geral.ordemservico.col.ColProduto;
-import unioeste.geral.ordemservico.exception.OrdemServicoException;
 
 /**
  *
@@ -67,12 +66,36 @@ public class OSProdutoDAO {
             throw new SQLException("Erro ao buscar produto no banco: " + e.getMessage(), e);
         }
         
-        if(osProdutos.isEmpty()) {
-            throw new OrdemServicoException("Não há produtos para essa ordem de serviço");
-        }
-        
         return osProdutos;
     }
     
+    public boolean removerOSProduto(Connection conn, int nroOS) throws Exception {
+        String SQL = "DELETE FROM \"OSProduto\" WHERE nro_os = ?";
+        
+        try (PreparedStatement stmt = conn.prepareStatement(SQL)) {
+            stmt.setInt(1, nroOS);
+            
+            int linhasAfetadas = stmt.executeUpdate();
+            
+            return linhasAfetadas > 0;
+        } catch (SQLException e) {
+            throw new SQLException("Erro ao remover produto no banco: " + e.getMessage(), e);
+        }
+    }
+    
+    public boolean removerProdutoOS(Connection conn, int idProduto, int nroOS) throws Exception {
+        String SQL = "DELETE FROM \"OSProduto\" WHERE id_produto = ? AND nro_os = ?";
+        
+        try (PreparedStatement stmt = conn.prepareStatement(SQL)) {
+            stmt.setInt(1, idProduto);
+            stmt.setInt(2, nroOS);
+            
+            int linhasAfetadas = stmt.executeUpdate();
+            
+            return linhasAfetadas > 0;
+        } catch (SQLException e) {
+            throw new SQLException("Erro ao remover produto no banco: " + e.getMessage(), e);
+        }
+    }
     
 }

@@ -6,12 +6,14 @@ package unioeste.geral.ordemservico.col;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import unioeste.geral.ordemservico.bo.Cliente;
 import unioeste.geral.ordemservico.bo.OSProduto;
 import unioeste.geral.ordemservico.bo.OSTipoServico;
 import unioeste.geral.ordemservico.bo.OrdemServico;
-import unioeste.geral.ordemservico.bo.Tecnico;
-import unioeste.geral.ordemservico.bo.TipoServico;
+import unioeste.geral.ordemservico.dao.OSProdutoDAO;
+import unioeste.geral.ordemservico.dao.OSTipoServicoDAO;
 import unioeste.geral.ordemservico.dao.OrdemServicoDAO;
 import unioeste.geral.ordemservico.exception.OrdemServicoException;
 import unioeste.geral.ordemservico.exception.OrdemServicoInvalidoException;
@@ -52,9 +54,27 @@ public class ColOrdemServico {
     public OrdemServico recuperarOrdemServico(Connection conn, int nroOS) throws Exception {
         OrdemServicoDAO ordemServicoDAO = new OrdemServicoDAO();
         
+        List<OSTipoServico> osTipoServicos;
+        List<OSProduto> osProdutos;
+        
+        ColOSTipoServico colOSTipoServico = new ColOSTipoServico();
+        try {                        
+            osTipoServicos = colOSTipoServico.recuperarOSTipoServicos(conn, nroOS);
+        } catch (OrdemServicoException e) {
+            osTipoServicos = new ArrayList<>();
+        }
+
+        ColOSProduto colOSProduto = new ColOSProduto();
+        try {
+            osProdutos = colOSProduto.recuperarOSProdutos(conn, nroOS);
+        } catch (OrdemServicoException e) {
+            System.out.println("testando no col");
+            osProdutos = new ArrayList<>();
+        }
+        
         try {
             atualizarValorTotalOS(conn, nroOS);
-            return ordemServicoDAO.obterOrdemServico(conn, nroOS);
+            return ordemServicoDAO.obterOrdemServico(conn, nroOS, osProdutos, osTipoServicos);
         } catch (SQLException e) {
             throw new SQLException(e.getMessage(), e);
         } catch (OrdemServicoException e) {
@@ -90,6 +110,27 @@ public class ColOrdemServico {
             
             ordemServicoDAO.atualizarValorTotalOS(conn, nroOS, valorTotal);
             return valorTotal;
+        } catch (SQLException e) {
+            throw new SQLException(e.getMessage(), e);
+        }
+    }
+    
+    public boolean removerOrdemServico(Connection conn, int nroOS) throws Exception {
+        if(nroOS <= 0) {
+            throw new OrdemServicoInvalidoException(OrdemServicoInvalidoException.CodigoErro.NRO_OS_INVALIDA, nroOS);
+        }
+        OrdemServicoDAO ordemServicoDAO = new OrdemServicoDAO();
+        
+        try {
+            OSProdutoDAO ospdao = new OSProdutoDAO();
+            OSTipoServicoDAO ostsdao = new OSTipoServicoDAO();
+            
+            ospdao.removerOSProduto(conn, nroOS);
+            ostsdao.removerOSTipoServico(conn, nroOS);
+            
+            boolean sucesso = ordemServicoDAO.removerOrdemServico(conn, nroOS);
+            
+            return sucesso;
         } catch (SQLException e) {
             throw new SQLException(e.getMessage(), e);
         }

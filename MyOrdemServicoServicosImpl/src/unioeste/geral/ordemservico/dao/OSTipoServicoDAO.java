@@ -13,7 +13,6 @@ import java.util.List;
 import unioeste.geral.ordemservico.bo.OSTipoServico;
 import unioeste.geral.ordemservico.bo.TipoServico;
 import unioeste.geral.ordemservico.col.ColTipoServico;
-import unioeste.geral.ordemservico.exception.OrdemServicoException;
 
 /**
  *
@@ -65,10 +64,35 @@ public class OSTipoServicoDAO {
             throw new SQLException("Erro ao buscar tipo de serviço no banco: " + e.getMessage(), e);
         }
         
-        if(osTipoServicos.isEmpty()) {
-            throw new OrdemServicoException("Não há tipos de serviço para essa ordem de serviço");
-        }
-        
         return osTipoServicos;
+    }
+    
+    public boolean removerOSTipoServico(Connection conn, int nroOS) throws Exception {
+        String SQL = "DELETE FROM \"OSTipoServico\" WHERE nro_os = ?";
+        
+        try (PreparedStatement stmt = conn.prepareStatement(SQL)) {
+            stmt.setInt(1, nroOS);
+            
+            int linhasAfetadas = stmt.executeUpdate();
+            
+            return linhasAfetadas > 0;
+        } catch (SQLException e) {
+            throw new SQLException("Erro ao remover tipo de serviço no banco: " + e.getMessage(), e);
+        }
+    }
+    
+    public boolean removerTipoServicoOS(Connection conn, int idTipoServico, int nroOS) throws Exception {
+        String SQL = "DELETE FROM \"OSTipoServico\" WHERE id_tipo_servico = ? AND nro_os = ?";
+        
+        try (PreparedStatement stmt = conn.prepareStatement(SQL)) {
+            stmt.setInt(1, idTipoServico);
+            stmt.setInt(2, nroOS);
+            
+            int linhasAfetadas = stmt.executeUpdate();
+            
+            return linhasAfetadas > 0;
+        } catch (SQLException e) {
+            throw new SQLException("Erro ao remover tipo de serviço no banco: " + e.getMessage(), e);
+        }
     }
 }
