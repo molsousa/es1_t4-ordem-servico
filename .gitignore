@@ -3,5 +3,5 @@
 **/test/
 **/dist/
 **/web/
-**/.xml
-**/.mf
+**/*.xml
+**/*.mf
