@@ -5,7 +5,6 @@
 package unioeste.geral.ordemservico.api.ordemservico;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.util.HashMap;
@@ -21,7 +20,7 @@ import unioeste.geral.ordemservico.manager.UCOrdemServicoGeralServicos;
  *
  * @author molsousa
  */
-@WebServlet("/ordem-servico/produto/remover")
+@WebServlet("/ordem-servico/remover/produto")
 public class RemoverProdutoOSServlet extends HttpServlet {
 
     private final ObjectMapper objectMapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);

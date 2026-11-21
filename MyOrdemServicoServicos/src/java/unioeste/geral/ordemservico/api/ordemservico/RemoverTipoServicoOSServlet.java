@@ -21,7 +21,7 @@ import unioeste.geral.ordemservico.manager.UCOrdemServicoGeralServicos;
  *
  * @author molsousa
  */
-@WebServlet("/ordem-servico/tipo-servico/remover")
+@WebServlet("/ordem-servico/remover/tipo-servico")
 public class RemoverTipoServicoOSServlet extends HttpServlet {
 
     private final ObjectMapper objectMapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
