@@ -38,11 +38,7 @@ public class CadastrarOrdemServicoServlet extends HttpServlet {
         try {
             JsonNode jsonNode = objectMapper.readTree(request.getReader());
             
-            int idStatusOS = 0;
-            
-            if (jsonNode.has("statusOS") && jsonNode.get("statusOS").has("id")) {
-                idStatusOS = jsonNode.get("statusOS").get("id").asInt();
-            }
+            int idStatusOS = 1;
 
             OrdemServico osForm = objectMapper.treeToValue(jsonNode, OrdemServico.class);
             

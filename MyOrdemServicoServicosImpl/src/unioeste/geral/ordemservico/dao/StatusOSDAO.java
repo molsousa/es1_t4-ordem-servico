@@ -56,4 +56,5 @@ public class StatusOSDAO {
 
         throw new OrdemServicoException("Não foi possível status da ordem de serviço no banco");
     }
+    
 }

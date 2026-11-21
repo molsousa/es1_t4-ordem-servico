@@ -21,14 +21,14 @@ public class ColProduto {
     public int cadastrarProduto(Connection conn, String nome, double valor) throws Exception {
         ProdutoDAO produtoDAO = new ProdutoDAO();
 
-        nome = nome.trim();
-
-        if (nome.isEmpty()) {
+        if (nome == null || nome.trim().isEmpty()) {
             throw new ProdutoException(ProdutoException.CodigoErro.NOME_INVALIDO, nome);
         }
 
+        nome = nome.trim();
+
         if (valor <= 0.0f) {
-            throw new ProdutoException(ProdutoException.CodigoErro.VALOR_INVÁLIDO, valor);
+            throw new ProdutoException(ProdutoException.CodigoErro.VALOR_INVALIDO, valor);
         }
 
         try {
@@ -39,11 +39,11 @@ public class ColProduto {
             throw new OrdemServicoException(e.getMessage(), e);
         }
     }
-    
+
     public List<Produto> recuperarProdutos(Connection conn) throws Exception {
-        
+
         ProdutoDAO produtoDAO = new ProdutoDAO();
-        
+
         try {
             return produtoDAO.listarProdutos(conn);
         } catch (SQLException e) {
@@ -52,10 +52,15 @@ public class ColProduto {
             throw new OrdemServicoException(e.getMessage(), e);
         }
     }
-    
+
     public Produto recuperarProduto(Connection conn, int idProduto) throws Exception {
-        ProdutoDAO produtoDAO = new ProdutoDAO();
         
+        if (idProduto <= 0) {
+            throw new ProdutoException(ProdutoException.CodigoErro.ID_INVALIDO, idProduto);
+        }
+        
+        ProdutoDAO produtoDAO = new ProdutoDAO();
+
         try {
             return produtoDAO.obterProduto(conn, idProduto);
         } catch (SQLException e) {

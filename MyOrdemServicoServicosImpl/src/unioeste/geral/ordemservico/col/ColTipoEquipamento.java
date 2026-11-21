@@ -20,11 +20,12 @@ public class ColTipoEquipamento {
     
     public int cadastrarTipoEquipamento(Connection conn, String nomeEquipamento) throws Exception {
         TipoEquipamentoDAO tipoEquipamentoDAO = new TipoEquipamentoDAO();
-        nomeEquipamento = nomeEquipamento.trim();
         
-        if(nomeEquipamento.isEmpty()) {
+        if (nomeEquipamento == null || nomeEquipamento.trim().isEmpty()) {
             throw new TipoEquipamentoException(TipoEquipamentoException.CodigoErro.NOME_INVALIDO, nomeEquipamento);
         }
+        
+        nomeEquipamento = nomeEquipamento.trim();
         
         try {
             return tipoEquipamentoDAO.cadastrarTipoEquipamento(conn, nomeEquipamento);
@@ -52,7 +53,7 @@ public class ColTipoEquipamento {
         
         TipoEquipamentoDAO tipoEquipamentoDAO = new TipoEquipamentoDAO();
         
-        if(codTipoEquipamento <= 0) {
+        if (codTipoEquipamento <= 0) {
             throw new TipoEquipamentoException(TipoEquipamentoException.CodigoErro.CODIGO_INVALIDO, codTipoEquipamento);
         }
         
@@ -69,9 +70,11 @@ public class ColTipoEquipamento {
         
         TipoEquipamentoDAO tipoEquipamentoDAO = new TipoEquipamentoDAO();
         
-        if(tipoEquipamento.getNome().isEmpty()) {
+        if (tipoEquipamento.getNome().trim().isEmpty()) {
             throw new TipoEquipamentoException(TipoEquipamentoException.CodigoErro.NOME_INVALIDO, tipoEquipamento.getNome());
         }
+        
+        tipoEquipamento.setNome(tipoEquipamento.getNome().trim());
         
         try {
             return tipoEquipamentoDAO.buscarIDTipoEquipamento(conn, tipoEquipamento);

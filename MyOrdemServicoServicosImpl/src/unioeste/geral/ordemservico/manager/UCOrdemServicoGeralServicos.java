@@ -79,6 +79,26 @@ public class UCOrdemServicoGeralServicos {
         }
     }
 
+    public boolean atualizarStatusOS(int nroOS, int idStatusOS) throws Exception {
+
+        try (Connection conn = ConnectionFactory.getConnection()) {
+            try {
+                ColOrdemServico colOrdemServico = new ColOrdemServico();
+                boolean sucesso = colOrdemServico.atualizarStatusOS(conn, nroOS, idStatusOS);
+                conn.commit();
+                return sucesso;
+            } catch (Exception e) {
+                conn.rollback();
+
+                if (e instanceof SQLException) {
+                    throw new OrdemServicoException(e.getMessage(), e);
+                }
+
+                throw e;
+            }
+        }
+    }
+
     public double cadastrarOSProduto(int nroOS, int idProduto, double valorCobrado, int qtd) throws Exception {
 
         try (Connection conn = ConnectionFactory.getConnection()) {
@@ -138,9 +158,9 @@ public class UCOrdemServicoGeralServicos {
             }
         }
     }
-    
+
     public boolean removerProdutoOS(int idProduto, int nroOS) throws Exception {
-        
+
         try (Connection conn = ConnectionFactory.getConnection()) {
             try {
                 ColOSProduto colOSProduto = new ColOSProduto();
@@ -158,9 +178,9 @@ public class UCOrdemServicoGeralServicos {
             }
         }
     }
-    
+
     public boolean removerTipoServicoOS(int idTipoServico, int nroOS) throws Exception {
-        
+
         try (Connection conn = ConnectionFactory.getConnection()) {
             try {
                 ColOSTipoServico colOSTipoServico = new ColOSTipoServico();

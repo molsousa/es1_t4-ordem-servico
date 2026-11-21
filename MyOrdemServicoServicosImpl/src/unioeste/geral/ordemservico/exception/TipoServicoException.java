@@ -11,36 +11,46 @@ import java.util.Objects;
  * @author molsousa
  */
 public class TipoServicoException extends OrdemServicoException {
-    
+
     private static final long serialVersionUID = 1;
 
     private final CodigoErro erro;
-    
+
     public TipoServicoException(CodigoErro erro, String nome) {
         super(montarMensagem(erro, nome));
         this.erro = Objects.requireNonNull(erro, "erro");
     }
-    
+
     public TipoServicoException(CodigoErro erro, double valor) {
         super(montarMensagem(erro, valor));
+        this.erro = Objects.requireNonNull(erro, "erro");
+    }
+
+    public TipoServicoException(CodigoErro erro, int id) {
+        super(montarMensagem(erro, id));
         this.erro = Objects.requireNonNull(erro, "erro");
     }
 
     private static String montarMensagem(CodigoErro erro, String nome) {
         return erro.getMessage() + ": " + nome;
     }
-    
+
     private static String montarMensagem(CodigoErro erro, double valor) {
         return erro.getMessage() + ": " + valor;
     }
-    
+
+    private static String montarMensagem(CodigoErro erro, int id) {
+        return erro.getMessage() + ": " + id;
+    }
+
     public CodigoErro getErro() {
         return erro;
     }
-    
+
     public enum CodigoErro {
         NOME_INVALIDO("Nome inválido"),
-        VALOR_INVALIDO("Valor inválido");
+        VALOR_INVALIDO("Valor inválido"),
+        ID_INVALIDO("ID inválido");
 
         private final String msg;
 
@@ -51,5 +61,5 @@ public class TipoServicoException extends OrdemServicoException {
         public String getMessage() {
             return this.msg;
         }
-    }    
+    }
 }

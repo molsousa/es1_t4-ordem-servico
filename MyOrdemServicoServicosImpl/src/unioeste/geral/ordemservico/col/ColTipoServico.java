@@ -20,11 +20,11 @@ public class ColTipoServico {
 
     public int cadastrarTipoServico(Connection conn, String nomeTipoServico, double valor) throws Exception {
 
-        nomeTipoServico = nomeTipoServico.trim();
-
-        if (nomeTipoServico == null || nomeTipoServico.isEmpty()) {
+        if (nomeTipoServico == null || nomeTipoServico.trim().isEmpty()) {
             throw new TipoServicoException(TipoServicoException.CodigoErro.NOME_INVALIDO, nomeTipoServico);
         }
+
+        nomeTipoServico = nomeTipoServico.trim();
 
         if (valor <= 0.0f) {
             throw new TipoServicoException(TipoServicoException.CodigoErro.VALOR_INVALIDO, valor);
@@ -52,9 +52,13 @@ public class ColTipoServico {
             throw new OrdemServicoException(e.getMessage(), e);
         }
     }
-    
+
     public TipoServico recuperarTipoServico(Connection conn, int idTipoServico) throws Exception {
-        
+
+        if (idTipoServico <= 0) {
+            throw new TipoServicoException(TipoServicoException.CodigoErro.ID_INVALIDO, idTipoServico);
+        }
+
         try {
             TipoServicoDAO tipoServicoDAO = new TipoServicoDAO();
             return tipoServicoDAO.obterTipoServico(conn, idTipoServico);

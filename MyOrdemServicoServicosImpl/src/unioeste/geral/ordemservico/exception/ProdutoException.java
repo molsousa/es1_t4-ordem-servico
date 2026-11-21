@@ -26,6 +26,11 @@ public class ProdutoException extends OrdemServicoException {
         this.erro = Objects.requireNonNull(erro, "erro");
     }
     
+    public ProdutoException(CodigoErro erro, int id) {
+        super(montarMensagem(erro, id));
+        this.erro = Objects.requireNonNull(erro, "erro");
+    }
+    
     private static String montarMensagem(CodigoErro erro, String nome) {
         return erro.getMessage() + ": " + nome;
     }
@@ -34,13 +39,18 @@ public class ProdutoException extends OrdemServicoException {
         return erro.getMessage() + ": " + valor;
     }
     
+    private static String montarMensagem(CodigoErro erro, int id) {
+        return erro.getMessage() + ": " + id;
+    }
+    
     public CodigoErro getErro() {
         return erro;
     }
     
     public enum CodigoErro {
         NOME_INVALIDO("Nome inválido"),
-        VALOR_INVÁLIDO("Válor inválido");
+        VALOR_INVALIDO("Valor inválido"),
+        ID_INVALIDO("ID inválido");
 
         private final String msg;
 
