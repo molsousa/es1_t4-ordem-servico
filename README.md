@@ -46,7 +46,7 @@ Esse projeto é um dos que não estão diretamente não é ligado aos demais pro
 
 Esse projeto é um dos projetos genéricos que podem ser adicionados a quaisquer outros estudos de caso. O `MyPessoaBO` contém as classes de `PessoaFisica` e `PessoaJuridica` que herdam de `Pessoa` e podem ser utilizadas em qualquer estudo de caso para representar um usuário cadastrado no banco. Segue abaixo um trecho de um diagrama de classes qualquer demonstrando as composições e associações.
 
-<img src="./img/Diagrama-Classe-Pessoa.png" alt="Diagrama de classes de negócio de pessoa para implementação." style="background-color: white; padding: 10px; border-radius: 5px;" />
+![Diagrama de classes Pessoa](./img/Diagrama-Classe-Pessoa.png)
 
 Importante notar que, caso um objeto `Pessoa` seja apagado, seus `fones` e `emails` e `enderecoEspecifico` são apagados juntos, pois são uma composição com `Pessoa`, dependem da classe pra existir. O mesmo não ocorre (e não deve ocorrer) com `ddi` e `ddd`.
 
@@ -105,7 +105,7 @@ Segue abaixo a estrutura de pacotes desse projeto:
 
 Aqui são feitas as classes de negócio do estudo de caso, daqui pra frente os próximos projetos são os únicos que podem sofrer fortes alterações dependendo da necessidade do cliente, segue abaixo o diagrama de classes completo, incluindo classes genéricas e estudo de caso:
 
-<img src="./img/Diagrama-Classe-OS.png" alt="Diagrama de classes de negócio do estudo de caso para implementação." style="background-color: white; padding: 10px; border-radius: 5px;" />
+![Diagrama de classes de negócio Ordem de Serviço](./img/Diagrama-Classe-OS.png)
 
 Como se percebe no diagrama de classes, nem todo usuário precisa ser modelado, apenas os que manterão dados na persistência. O estudo de caso inclui `Atendente` como um dos usuários do sistema. Porém não é necessário estar no sistema.
 
