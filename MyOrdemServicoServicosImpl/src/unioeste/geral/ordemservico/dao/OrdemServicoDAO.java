@@ -8,6 +8,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import unioeste.geral.ordemservico.bo.OrdemServico;
 import unioeste.geral.ordemservico.bo.OSProduto;
@@ -42,6 +43,39 @@ public class OrdemServicoDAO {
         } catch (SQLException e) {
             throw new SQLException("Erro ao cadastrar ordem de serviço no banco: " + e.getMessage(), e);
         }
+    }
+    
+    public List<OrdemServico> obterOrdemServicos(Connection conn) throws Exception {
+        String SQL = "SELECT * FROM \"OrdemServico\"";
+        
+        List<OrdemServico> ordemServicos = new ArrayList<>();
+        
+        try (PreparedStatement stmt = conn.prepareStatement(SQL)) {
+            
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    OrdemServico os = new OrdemServico();
+                    
+                    os.setNro(rs.getInt("nro_os"));
+                    os.setDescProblema(rs.getString("desc_problema"));
+                    os.setValorTotalOS(rs.getDouble("valor_total_os"));
+                    os.setDtEmissao(rs.getDate("dt_emissao"));
+                    
+                    ColStatusOS colStatusOS = new ColStatusOS();
+                    os.setStatusOS(colStatusOS.recuperarStatusOS(conn, rs.getInt("id_status_os")));
+                    
+                    ordemServicos.add(os);
+                }
+            }
+        } catch (SQLException e) {
+            throw new SQLException("Erro ao buscar ordem de serviço no banco: " + e.getMessage(), e);
+        }
+        
+        if (ordemServicos.isEmpty()) {
+            throw new OrdemServicoException("Nenhuma ordem de serviço encontrada no banco");
+        }
+        
+        return ordemServicos;
     }
 
     public OrdemServico obterOrdemServico(Connection conn, int nroOS, List<OSProduto> produtos, List<OSTipoServico> tipoServicos) throws Exception {

@@ -6,6 +6,7 @@ package unioeste.geral.ordemservico.manager;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.List;
 import unioeste.apoio.bd.ConnectionFactory;
 import unioeste.geral.ordemservico.bo.OrdemServico;
 import unioeste.geral.ordemservico.col.ColOSProduto;
@@ -27,6 +28,26 @@ public class UCOrdemServicoGeralServicos {
                 boolean sucesso = colOrdemServico.cadastrarOrdemServico(conn, os, os.getTipoEquipamento().getCodigo(), os.getCliente().getCpf(), idStatusOS);
                 conn.commit();
                 return sucesso;
+            } catch (Exception e) {
+                conn.rollback();
+
+                if (e instanceof SQLException) {
+                    throw new OrdemServicoException(e.getMessage(), e);
+                }
+
+                throw e;
+            }
+        }
+    }
+    
+    public List<OrdemServico> obterOrdemServicos() throws Exception {
+        
+        try (Connection conn = ConnectionFactory.getConnection()) {
+            try {
+                ColOrdemServico colOrdemServico = new ColOrdemServico();
+                List<OrdemServico> ordemServicos = colOrdemServico.recuperarOrdemServicos(conn);
+                conn.commit();
+                return ordemServicos;
             } catch (Exception e) {
                 conn.rollback();
 

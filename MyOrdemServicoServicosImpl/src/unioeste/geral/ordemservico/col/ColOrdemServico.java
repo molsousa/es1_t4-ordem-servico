@@ -56,6 +56,19 @@ public class ColOrdemServico {
             throw new OrdemServicoException(e.getMessage(), e);
         }
     }
+    
+    public List<OrdemServico> recuperarOrdemServicos(Connection conn) throws Exception {
+        
+        OrdemServicoDAO ordemServicoDAO = new OrdemServicoDAO();
+        
+        try {
+            return ordemServicoDAO.obterOrdemServicos(conn);
+        } catch (SQLException e) {
+            throw new SQLException(e.getMessage(), e);
+        } catch (OrdemServicoException e) {
+            throw new OrdemServicoException(e.getMessage(), e);
+        }
+    }
 
     public OrdemServico recuperarOrdemServico(Connection conn, int nroOS) throws Exception {
 
