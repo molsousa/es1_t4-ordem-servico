@@ -37,12 +37,12 @@ public class AtualizarTecnicoOSServlet extends HttpServlet {
             JsonNode body = objectMapper.readTree(request.getReader());
             
             JsonNode nroNode = body.get("nroOS");
-            JsonNode tecNode = body.get("idTecnico");
+            JsonNode tecNode = body.get("cpf_tecnico");
             
             int nroOS = nroNode.asInt();
-            int idTecnico = tecNode.asInt();
+            String cpf = tecNode.asText();
             
-            boolean sucesso = osManager.atualizarTecnicoOS(idTecnico, nroOS);
+            boolean sucesso = osManager.atualizarTecnicoOS(cpf, nroOS);
             String atualizarTecnicoResponse = objectMapper.writeValueAsString(sucesso);
             
             response.getWriter().println(atualizarTecnicoResponse);

@@ -29,7 +29,7 @@ Abaixo, segue as transações envolvendo cadastro no banco.
 Abaixo, segue as transações envolvendo atualizações no banco.
 
 - [AtualizarStatusOSServlet](./src/java/unioeste/geral/ordemservico/api/ordemservico/AtualizarStatusOSServlet.java): atualiza o status da OS conforme o ID requisitado.
-- [AtualizarTecnicoOSServlet](./src/java/unioeste/geral/ordemservico/api/ordemservico/AtualizarTecnicoOSServlet.java): atualiza o técnico responsável pela OS, conforme o ID requisitado.
+- [AtualizarTecnicoOSServlet](./src/java/unioeste/geral/ordemservico/api/ordemservico/AtualizarTecnicoOSServlet.java): atualiza o técnico responsável pela OS, conforme o CPF requisitado.
 
 ### GET 
 

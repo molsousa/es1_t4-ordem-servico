@@ -59,12 +59,12 @@ public class UCOrdemServicoGeralServicos {
         }
     }
 
-    public boolean atualizarTecnicoOS(int idTecnico, int nroOS) throws Exception {
+    public boolean atualizarTecnicoOS(String cpf, int nroOS) throws Exception {
 
         try (Connection conn = ConnectionFactory.getConnection()) {
             try {
                 ColOrdemServico colOrdemServico = new ColOrdemServico();
-                boolean sucesso = colOrdemServico.atualizarOSTecnico(conn, idTecnico, nroOS);
+                boolean sucesso = colOrdemServico.atualizarOSTecnico(conn, cpf, nroOS);
                 conn.commit();
                 return sucesso;
             } catch (Exception e) {

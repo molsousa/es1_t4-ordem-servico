@@ -32,6 +32,16 @@ public class ColOSTipoServico {
         if (nroOS <= 0) {
             throw new OrdemServicoInvalidoException(OrdemServicoInvalidoException.CodigoErro.NRO_OS_INVALIDA, nroOS);
         }
+        
+        ColOrdemServico colOrdemServico = new ColOrdemServico();
+        
+        String statusOS = colOrdemServico.recuperarOrdemServico(conn, nroOS).getStatusOS().getDescricao();
+        
+        if (!statusOS.equals("Emitida")){
+            if (!statusOS.equals("emitida")) {
+                throw new OrdemServicoException("Ordem não pode ser alterada, status: " + statusOS);
+            }
+        }
 
         try {
             OSTipoServicoDAO ostsdao = new OSTipoServicoDAO();

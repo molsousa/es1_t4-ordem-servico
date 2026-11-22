@@ -92,13 +92,23 @@ public class ColOrdemServico {
         }
     }
 
-    public boolean atualizarOSTecnico(Connection conn, int idTecnico, int nroOS) throws Exception {
+    public boolean atualizarOSTecnico(Connection conn, String cpf, int nroOS) throws Exception {
 
         if (nroOS <= 0) {
             throw new OrdemServicoInvalidoException(OrdemServicoInvalidoException.CodigoErro.NRO_OS_INVALIDA, nroOS);
         }
+        
+        String statusOS = recuperarOrdemServico(conn, nroOS).getStatusOS().getDescricao();
+        
+        if (!statusOS.equals("Emitida")){
+            if (!statusOS.equals("emitida")) {
+                throw new OrdemServicoException("Ordem não pode ser alterada, status: " + statusOS);
+            }
+        }
 
         OrdemServicoDAO ordemServicoDAO = new OrdemServicoDAO();
+        ColTecnico colTecnico = new ColTecnico();
+        int idTecnico = colTecnico.recuperarIDTecnico(conn, cpf);
 
         try {
             return ordemServicoDAO.atualizarOSTecnico(conn, idTecnico, nroOS);

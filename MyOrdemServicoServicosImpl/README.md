@@ -10,6 +10,7 @@ As validações incluem:
 
 - Verificar de um ID é válido.
 - Verificar se o valor cobrado é válido.
+- Verificar se a OS está com status emitida.
 
 ### OSTipoServico 
 
@@ -17,6 +18,7 @@ As validações incluem:
 
 - Verificar de um ID é válido.
 - Verificar se o valor cobrado é válido.
+- Verificar se a OS está com status emitida.
 
 ### OrdemServico 
 
@@ -77,7 +79,7 @@ public boolean cadastrarOrdemServico(OrdemServico os, int idStatusOS)
 
 public OrdemServico obterOrdemServico(int nroOS)
 
-public boolean atualizarTecnicoOS(int idTecnico, int nroOS)
+public boolean atualizarTecnicoOS(String cpf, int nroOS)
 
 public boolean atualizarStatusOS(int nroOS, int idStatusOS)
 
