@@ -64,6 +64,9 @@ public class OrdemServicoDAO {
                     ColStatusOS colStatusOS = new ColStatusOS();
                     os.setStatusOS(colStatusOS.recuperarStatusOS(conn, rs.getInt("id_status_os")));
                     
+                    ColCliente colCliente = new ColCliente();
+                    os.setCliente(colCliente.recuperarClientePorID(conn, rs.getInt("id_cliente")));
+                    
                     ordemServicos.add(os);
                 }
             }
