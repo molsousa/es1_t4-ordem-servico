@@ -16,7 +16,7 @@ public class ColPessoa {
 
     public static boolean validarNome(Pessoa pessoa) throws PessoaException {
 
-        if (pessoa.getNome() != null && !pessoa.getNome().trim().isEmpty()) {
+        if (pessoa.getNome() == null || pessoa.getNome().trim().isEmpty()) {
             throw new NomeException(NomeException.CodigoErro.NOME_INVALIDO, pessoa.getNome());
         }
 
@@ -27,7 +27,7 @@ public class ColPessoa {
 
     public static boolean validarNomeSocial(Pessoa pessoa) throws PessoaException {
 
-        if (pessoa.getNomeSocial() != null && !pessoa.getNomeSocial().trim().isEmpty()) {
+        if (pessoa.getNomeSocial() == null || pessoa.getNomeSocial().trim().isEmpty()) {
             throw new NomeException(NomeException.CodigoErro.NOME_SOCIAL_INVALIDO, pessoa.getNomeSocial());
         }
 

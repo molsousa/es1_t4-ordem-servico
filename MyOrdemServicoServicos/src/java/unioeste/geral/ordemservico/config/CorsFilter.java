@@ -39,11 +39,7 @@ public class CorsFilter implements Filter {
             return; 
         }
 
-        System.out.println("ENTROU NO CORS: " + req.getRequestURI());
-
         chain.doFilter(request, response);
-
-        System.out.println("SAIU DO CORS: " + req.getRequestURI());
     }
 
     @Override
