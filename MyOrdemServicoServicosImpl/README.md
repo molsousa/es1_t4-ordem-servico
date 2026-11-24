@@ -79,6 +79,8 @@ public boolean cadastrarOrdemServico(OrdemServico os, int idStatusOS)
 
 public OrdemServico obterOrdemServico(int nroOS)
 
+public List<OrdemServico> obterOrdemServicos()
+
 public boolean atualizarTecnicoOS(String cpf, int nroOS)
 
 public boolean atualizarStatusOS(int nroOS, int idStatusOS)

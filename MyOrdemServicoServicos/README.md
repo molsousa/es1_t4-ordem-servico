@@ -37,6 +37,7 @@ Abaixo, segue as consultas.
 
 - [ObterClientePorCPFServlet](./src/java/unioeste/geral/ordemservico/api/cliente/ObterClientePorCPFServlet.java): retorna objeto `Cliente` serializado com base no CPF fornecido.
 - [PesquisarClienteServlet](./src/java/unioeste/geral/ordemservico/api/cliente/PesquisarClienteServlet.java): retorna uma lista de `Cliente` serializados com base no padrão de texto fornecido.
+- [ObterListaOrdemServicoServlet](./src/java/unioeste/geral/ordemservico/api/ordemservico/ObterListaOrdemServicoServlet.java): retorna uma lista com todas as ordens de serviço no banco.
 - [ObterOrdemServicoServlet](./src/java/unioeste/geral/ordemservico/api/ordemservico/ObterOrdemServicoServlet.java): retorna um objeto `OrdemServico` serializado com base no número da OS fornecido.
 - [ObterListaProdutoServlet](./src/java/unioeste/geral/ordemservico/api/produto/ObterListaProdutoServlet.java): retorna uma lista dos produtos cadastrados no banco, com ID, nome e valor referência.
 - [ObterListaTipoEquipamentoServlet](./src/java/unioeste/geral/ordemservico/api/tipoequipamento/ObterListaTipoEquipamentoServlet.java): retorna uma lista de tipos de equipamento, com ID e nome do tipo de equipamento.

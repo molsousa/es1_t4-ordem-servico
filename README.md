@@ -198,6 +198,7 @@ Segue abaixo a estrutura de pacotes:
             │   │   ├── CadastrarOSTipoServicoServlet.java
             │   │   ├── CadastrarOrdemServicoServlet.java
             │   │   ├── ObterOrdemServicoServlet.java
+            │   │   ├── ObterListaOrdemServicoServlet.java
             │   │   ├── RemoverOrdemServicoServlet.java
             │   │   ├── RemoverProdutoOSServlet.java
             │   │   └── RemoverTipoServicoOSServlet.java
